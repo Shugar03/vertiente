@@ -21,6 +21,10 @@ narrativas:
   herencia_profundidad_max: 10
   origen_ventana_h: 3                       # tolerancia del puntaje = 3 h
   origen_minimo: 5
+  # Modo degradado (E32): si casi no hay respuestas, narrativas solo por significado.
+  min_tasa_respuestas: 0.03                 # en práctica la participación es ~0,25
+  semantico_knn: 5
+  semantico_min_frac_tamano: 0.0005
 
 coordinacion:
   # E25: elegido por PROMEDIO y PEOR CASO sobre variantes de estrés (no por el set completo): media 23,2 / peor 21,4

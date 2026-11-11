@@ -38,6 +38,7 @@ Operaciones detectadas en práctica (sin mirar la verdad):
 | solo litio | 25,06 | 23,81 | 48,87 | ⚠ un único tema: el origen de L5 falla |
 | solo hospital | 29,79 | 10,25 | 40,04 | ⚠ techo: solo C3 es detectable |
 | solo colectivo | 29,79 | 0,71 | 30,50 | ⚠ techo: ninguna campaña empuja colectivo |
+| **sin respuestas** (`respuesta_a` vacío) | 12,08 | 20,56 | 32,64 | modo degradado automático (E32); sin él: 1,81 |
 
 ⚠ En `sin_*`/`solo_*` las cuentas de campaña siguen en la verdad aunque su actividad coordinada esté en el tema
 quitado (solo queda su actividad de "cobertura"): el recall tiene un techo bajo que no es error del método.
@@ -67,3 +68,4 @@ quitado (solo queda su actividad de "cobertura"): el recall tiene un techo bajo 
 | E26–E30 | El detector depende del orden de filas; rescate de núcleo k-core | Confirmada y corregida: peor caso 20,9 → 23,5 + orden determinístico |
 | E27 | Re-partición recursiva | **Refutada** (crea grupos falsos) |
 | E31 | "Lo que empuja una operación es el lado que apoya" | **Descartada**: operaciones dudosas romperían narrativas sanas |
+| E32 | ¿Sobrevive sin respuestas? | **No** (1,8/55) → modo degradado por significado: 32,6/55 |

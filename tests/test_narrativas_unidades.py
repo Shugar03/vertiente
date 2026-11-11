@@ -111,3 +111,24 @@ def test_textos_acompanamiento_son_cortos_y_responden_a_muchos_grupos():
         "micro": list(range(6)) + [9] * 6 + [8],
     })
     assert textos_acompanamiento(c, min_dispersion=5, max_palabras=4) == {"tal"}
+
+
+def test_modo_semantico_agrupa_por_significado_y_separa_bandos():
+    from radar.narrativas.semantico import narrativas_semanticas
+    rng = np.random.default_rng(0)
+    base = {"A+": [1, 0, 0, 0.3], "A-": [1, 0, 0, -0.3], "B+": [0, 1, 0, 0.3], "B-": [0, 1, 0, -0.3]}
+    C, etiqueta = [], []
+    for k, v in base.items():
+        for _ in range(3):
+            C.append(np.array(v) + rng.normal(0, 0.02, 4))
+            etiqueta.append(k)
+    C = np.array(C, dtype=np.float32)
+    C /= np.linalg.norm(C, axis=1, keepdims=True)
+    narr, lado = narrativas_semanticas(C, np.zeros(len(C), bool), k=3, seed=1)
+    tema = [e[0] for e in etiqueta]
+    assert all((narr[i] == narr[j]) == (tema[i] == tema[j]) for i in range(len(C)) for j in range(len(C)))
+    for t in "AB":
+        idx = [i for i, e in enumerate(etiqueta) if e[0] == t]
+        signo = [etiqueta[i][1] for i in idx]
+        assert all((lado[i] == lado[j]) == (signo[a] == signo[b])
+                   for a, i in enumerate(idx) for b, j in enumerate(idx))

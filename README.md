@@ -52,6 +52,9 @@ CSV.gz ─► ingest (DuckDB): limpieza, dedup, fechas, respuestas huérfanas/c�
        ─► entrega: comentarios.csv, narrativas.csv, cuentas.csv, costo.json (+ dashboard)
 ```
 
+Si el set casi no trae respuestas, el pipeline lo detecta y pasa a un **modo degradado** por significado
+(comunidades de microgrupos + dos bandos por similitud): 32,6/55 en vez de colapsar (E32).
+
 Ideas clave, todas agnósticas del tema:
 - **La conversación misma es la etiqueta.** Las respuestas conectan los dos bandos de cada narrativa; no hace falta
   un modelo que entienda postura comentario por comentario.

@@ -38,9 +38,8 @@ caso, porque el set final es otro. Radar: narrativas y coordinación a escala, e
 
 ## Preguntas probables del jurado
 
-- **¿Y si el set final no tiene respuestas?** Las narrativas siguen saliendo de la similitud semántica (microgrupos);
-  lo que se pierde es el emparejamiento automático de bandos y la herencia. Ahí entra el profesor LLM (1 llamada por
-  narrativa).
+- **¿Y si el set final no tiene respuestas?** Lo probamos (E32): el pipeline detecta la falta de respuestas y pasa a un
+  modo degradado por significado; sacó 32,6/55 en práctica sin una sola respuesta (sin ese modo: 1,8).
 - **¿Por qué no un LLM para todo?** Costo y escala: 150.000 llamadas vs ~13; y el LLM no ve la coordinación, que está
   en el comportamiento, no en el texto.
 - **¿Overfitting a práctica?** Cero palabras del tema en el código; umbrales relativos/adaptativos; parámetros elegidos

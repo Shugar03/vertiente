@@ -33,6 +33,7 @@ from radar.narrativas.origen import origen_robusto
 from radar.narrativas.postura import bipartir, lado_apoya
 from radar.narrativas.respuestas import (heredar, tasa_participacion, textos_acompanamiento, textos_sin_respuestas,
                                          umbral_frecuencia_ruido)
+from radar.narrativas.semantico import centroides, microgrupos_ruido_semantico, narrativas_semanticas
 from radar.texto import solo_reaccion
 
 log = logging.getLogger(__name__)
@@ -86,6 +87,10 @@ def asignar(c: pd.DataFrame, X: np.ndarray, hashes: list[str], cfg: dict, seed: 
     c = c.merge(pd.DataFrame({"texto_hash": hashes, "micro": micro_txt}), on="texto_hash", how="left")
     n_micro = int(micro_txt.max()) + 1
 
+    tasa = tasa_participacion(c)
+    if tasa < cfg["min_tasa_respuestas"]:
+        return _asignar_semantico(c, X, hashes, n_micro, cfg, seed, tasa)
+
     acomp = textos_acompanamiento(c, cfg["acomp_min_dispersion"], cfg["acomp_max_palabras"])
     k_min = umbral_frecuencia_ruido(tasa_participacion(c), cfg["ruido_alfa"])
     ruido_txt = textos_sin_respuestas(c, k_min) - acomp
@@ -102,6 +107,21 @@ def asignar(c: pd.DataFrame, X: np.ndarray, hashes: list[str], cfg: dict, seed: 
     c = aplicar_posturas(c, lado_apoya(nucleo))
     log.info("narrativas: microgrupos=%d acompañamiento=%d textos_ruido=%d (k>=%d) ruido_micro=%d narrativas=%d",
              n_micro, len(acomp), len(ruido_txt), k_min, int(ruido.sum()), c.loc[c["narr"] >= 0, "narr"].nunique())
+    return c
+
+
+def _asignar_semantico(c: pd.DataFrame, X: np.ndarray, hashes: list[str], n_micro: int, cfg: dict, seed: int,
+                       tasa: float) -> pd.DataFrame:
+    """Modo degradado sin estructura de respuestas (E32)."""
+    ruido = microgrupos_ruido_semantico(c, n_micro, cfg["semantico_min_frac_tamano"])
+    narr_m, lado_m = narrativas_semanticas(centroides(c, X, hashes, n_micro), ruido, cfg["semantico_knn"], seed)
+    c["narr"] = narr_m[c["micro"].to_numpy()]
+    c["lado"] = lado_m[c["micro"].to_numpy()]
+    c["heredado"] = False
+    nucleo = c[c["narr"] >= 0].assign(es_respuesta=lambda d: d["respuesta_a"].notna())
+    c = aplicar_posturas(c, lado_apoya(nucleo))
+    log.warning("narrativas: MODO DEGRADADO sin respuestas (participación %.3f < %.3f): %d narrativas",
+                tasa, cfg["min_tasa_respuestas"], c.loc[c["narr"] >= 0, "narr"].nunique())
     return c
 
 
