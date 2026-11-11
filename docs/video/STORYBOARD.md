@@ -32,7 +32,7 @@ Duración total ≈ 1:22. Si sobra tiempo, la escena 5 es la que más luce: deja
 4. Notificaciones del sistema desactivadas (modo No molestar).
 
 **Comandos para las tomas:**
-- **A (escena 1):** `gzcat datos/practica/comentarios.csv.gz | cut -d, -f5 | head -400`
+- **A (escena 1):** `gzcat datos/practica/comentarios.csv.gz | head -400` (líneas crudas del CSV pasando rápido)
 - **B (escena 3):** `make run` y después `make check` (para que corra en ~15 s, correlo una vez antes: deja la caché
   caliente).
 - Atajo para saltar a un día del dashboard sin esperar la reproducción: agregar `#t=21` al final de la URL (día 6).
