@@ -30,6 +30,7 @@ coordinacion:
   min_vecinos_comunes: 3                    # las operaciones forman triángulos; el azar genuino no
   min_tamano: 5
   min_densidad: 0.3
+  fraccion_nucleo: 0.5                      # E30: rescate del núcleo k-core si la comunidad no es densa
 
 llm:
   proveedor: null                           # null = tomar de LLM_PROVIDER (.env); sin clave => respaldo

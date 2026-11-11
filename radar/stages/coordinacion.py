@@ -66,7 +66,8 @@ def run(interim: Path, config: dict) -> dict:
     con.execute(f"create table cu as select * from '{interim / 'cuentas.parquet'}'")
     sync = sincronias_alineadas(con, "cm", cfg["ventana_min"])
     grupos_d = detectar_grupos(sync, cfg["min_sincronias"], cfg["min_sincronia_norm"], cfg["min_vecinos_comunes"],
-                               cfg["min_tamano"], cfg["min_densidad"], seed=config["seed"])
+                               cfg["min_tamano"], cfg["min_densidad"], seed=config["seed"],
+                               fraccion_nucleo=cfg["fraccion_nucleo"])
     grupos = pd.DataFrame({"cuenta_id": list(grupos_d), "grupo": list(grupos_d.values())})
     grupos.to_parquet(interim / "grupos.parquet")
     meta = describir_operaciones(con, grupos)

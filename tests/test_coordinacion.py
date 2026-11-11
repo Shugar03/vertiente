@@ -71,6 +71,24 @@ def test_filtrar_por_vecinos_comunes_quita_aristas_sueltas():
     assert set(map(tuple, out[["x", "y"]].values)) == set(clique)
 
 
+def test_nucleo_rescata_operacion_con_cuentas_pegadas():
+    import igraph as ig
+    import numpy as np
+    from radar.coordinacion.grafo import nucleo_si_hace_falta
+    clique = [(a, b) for a in range(10) for b in range(a + 1, 10)]
+    pegadas = [(10 + i, i % 10) for i in range(40)]  # 40 cuentas genuinas con un lazo cada una
+    g = ig.Graph(n=50, edges=clique + pegadas)
+    assert g.induced_subgraph(range(50)).density() < 0.3
+    assert sorted(nucleo_si_hace_falta(g, np.arange(50), 0.3, 0.5).tolist()) == list(range(10))
+
+
+def test_detectar_grupos_es_independiente_del_orden(con):
+    s = sincronias_alineadas(con, "cm", ventana_min=30)
+    a = detectar_grupos(s, 2, 0.1, 3, 5, 0.3, 1)
+    b = detectar_grupos(s.sample(frac=1, random_state=3), 2, 0.1, 3, 5, 0.3, 1)
+    assert a == b
+
+
 def test_detectar_grupos_sin_aristas():
     vacio = pd.DataFrame(columns=["x", "y", "sync", "sync_n"])
     assert detectar_grupos(vacio, 2, 0.1, 3, 5, 0.3, 1) == {}
