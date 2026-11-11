@@ -21,8 +21,9 @@ publicación, empujando lo mismo, una y otra vez."
 
 **2:00 — Números (40 s).**
 - 200.000 comentarios en **15 segundos**, en una notebook, **USD 0** de IA.
-- **53,8 / 55** en la parte automática de práctica (línea base: 17).
+- **53,6 / 55** en la parte automática de práctica (línea base: 17).
 - Robusto: datos ensuciados, 75% de los datos, otras semillas → mismo resultado (VALIDACION.md).
+- Agnóstico: sobre 2 temas y 8 narrativas inventadas que nunca vio, 29,7/30 en narrativas (SINTETICOS.md).
 - Un comando: `make entrega`. DuckDB + Parquet hoy; ClickHouse + stream para millones por día, mismo SQL.
 
 **2:40 — Cierre (20 s).**
@@ -32,7 +33,7 @@ caso, porque el set final es otro. Radar: narrativas y coordinación a escala, e
 ## Video (≤ 3 min, para Hacki)
 
 1. Terminal: `make entrega` corriendo (acelerado) → `OK: formato válido`.
-2. `make score` sobre práctica: 53,76 / 55.
+2. `make score` sobre práctica: 53,62 / 55.
 3. Dashboard: reproducción en vivo + hover en una narrativa + panel "Quién lo empuja".
 4. Diagrama de `README.md` (cómo funciona) 10 s.
 
@@ -47,3 +48,5 @@ caso, porque el set final es otro. Radar: narrativas y coordinación a escala, e
 - **¿Falsos positivos de coordinación?** Exigimos repetición alineada + triángulos + densidad; los picos virales
   genuinos (muchas cuentas una vez) no pasan (hay un test que lo verifica).
 - **¿Escala?** Ver README → "Cómo escala".
+- **¿Qué no detecta?** Lo decimos: campañas de cuentas antiguas que rotan subgrupos, donde ningún par coincide dos
+  veces (lo encontramos con sets sintéticos; probamos 4 soluciones y ninguna mejoraba sin dañar el resto).

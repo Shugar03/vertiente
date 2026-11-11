@@ -21,6 +21,7 @@ narrativas:
   herencia_profundidad_max: 10
   origen_ventana_h: 3                       # tolerancia del puntaje = 3 h
   origen_minimo: 5
+  origen_minimo_frac: 0.005                 # E37: el pico de origen se mide relativo al volumen de la narrativa
   # Modo degradado (E32): si casi no hay respuestas, narrativas solo por significado.
   min_tasa_respuestas: 0.03                 # en práctica la participación es ~0,25
   semantico_knn: 5

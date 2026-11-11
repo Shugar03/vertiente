@@ -867,7 +867,7 @@ def main():
     pub_by_id = {p["id"]: p for p in pubs}
 
     # --- cuentas genuinas candidatas (se descartan las inactivas al final)
-    NG = 6600
+    NG = 6420
     usados = set()
     g_user = [usuario_genuino(r, usados) for _ in range(NG)]
     g_fecha = [fecha_creacion(r) for _ in range(NG)]
@@ -969,7 +969,7 @@ def main():
 
     # --- TRAMPA: ~120 cuentas genuinas distintas en 30 min
     activos = sorted({c["cuenta"] for c in C})
-    trampa_cuentas = r.choice(activos, size=124, replace=False)
+    trampa_cuentas = r.choice(activos, size=100, replace=False)
     roots_tr = []
     for cu in trampa_cuentas:
         t = trampa["t"] + 60 + int(min(1780, r.exponential(600)))
@@ -1012,6 +1012,7 @@ def main():
     q1_ids = list(range(NG, NG + 25))  # índices de cuenta
     luz_pubs = [p for p in pubs if p["tema"] == "luz"]
     usados_q1 = set()
+    uso_q1 = {c_: 0 for c_ in q1_ids}
     for (d, h, m) in Q1_RAFAGAS:
         tb = ts(datetime(2026, 9, d, h, m, tzinfo=TZ))
         cand = [p for p in luz_pubs if p["t"] < tb - 1800 and p["id"] not in usados_q1]
@@ -1019,7 +1020,11 @@ def main():
         tgt = cand[int(r.integers(0, min(3, len(cand))))]
         usados_q1.add(tgt["id"])
         k = int(r.integers(12, 21))
-        miembros = r.choice(q1_ids, size=k, replace=False)
+        # prioriza cuentas menos usadas para que las 25 participen
+        orden_q1 = sorted(q1_ids, key=lambda c_: (uso_q1[c_], r.random()))
+        miembros = r.permutation(orden_q1[:k])
+        for c_ in miembros:
+            uso_q1[c_] += 1
         idx_burst = []
         for j, cu in enumerate(miembros):
             t = tb + int(j * r.uniform(30, 75)) if j else tb
@@ -1159,14 +1164,14 @@ def main():
     pd.DataFrame(FUENTES, columns=["fuente_id", "nombre", "tipo"]).to_csv(SALIDA / "fuentes.csv", index=False)
     pdf = pd.DataFrame([dict(publicacion_id=p["id"], fuente_id=p["fuente"], fecha=iso(p["t"]),
                              titular=p["titular"]) for p in pubs])
-    pdf.to_csv(SALIDA / "publicaciones.csv.gz", index=False, compression="gzip")
+    pdf.to_csv(SALIDA / "publicaciones.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
     df[["comentario_id", "publicacion_id", "cuenta_id", "fecha", "texto", "respuesta_a", "me_gusta"]].to_csv(
-        SALIDA / "comentarios.csv.gz", index=False, compression="gzip")
+        SALIDA / "comentarios.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
     cu[["cuenta_id", "usuario", "fecha_creacion", "seguidores", "siguiendo"]].to_csv(
-        SALIDA / "cuentas.csv.gz", index=False, compression="gzip")
+        SALIDA / "cuentas.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
     df[["comentario_id", "nar", "postura"]].rename(columns={"nar": "narrativa_id"}).to_csv(
-        SALIDA / "verdad" / "comentarios.csv.gz", index=False, compression="gzip")
-    cu[["cuenta_id", "campana_id"]].to_csv(SALIDA / "verdad" / "cuentas.csv.gz", index=False, compression="gzip")
+        SALIDA / "verdad" / "comentarios.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
+    cu[["cuenta_id", "campana_id"]].to_csv(SALIDA / "verdad" / "cuentas.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})
 
     impulsada = {"E4": "Q1", "R2": "Q2"}
     nrows = []
@@ -1199,7 +1204,8 @@ def main():
         por_narrativa={k: int(v) for k, v in df[df.nar != "ninguna"].nar.value_counts().items()},
         trampa=dict(publicacion_id=trampa["id"], descripcion="Video viral del vuelco en la curva del km 40: "
                     "~120 cuentas genuinas comentan en 30 minutos, muchas copian 'esa curva es la muerte' "
-                    "sin coordinación.", cuentas=int(len(trampa_cuentas))),
+                    "sin coordinación.", cuentas_en_30_min=int(df[(df.pub == trampa["id"]) & (df.t < trampa["t"] + 1800)
+                                                       ].cuenta.nunique())),
     )
     (SALIDA / "verdad" / "resumen.json").write_text(json.dumps(resumen, ensure_ascii=False, indent=2))
     verificar(df, cu, pdf)

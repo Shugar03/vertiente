@@ -6,8 +6,10 @@ Sobre cientos de miles de comentarios, **descubre qué narrativas circulan** (co
 las operaciones coordinadas que las empujan**. Rápido (≈15 s para 200.000 comentarios en una notebook), barato
 (USD 0 sin LLM) y sin depender de los temas del set de práctica.
 
-**Práctica: 53,76 / 55 puntos automáticos** (línea base oficial ≈ 17). Detalle y robustez en
-[docs/VALIDACION.md](docs/VALIDACION.md).
+**Práctica: 53,62 / 55 puntos automáticos** (línea base oficial ≈ 17). Detalle y robustez en
+[docs/VALIDACION.md](docs/VALIDACION.md). Probado además sobre dos sets sintéticos escritos por agentes que no
+vieron el pipeline (temas y campañas nuevas): narrativas 29,7/30 sobre temas nunca vistos
+([docs/SINTETICOS.md](docs/SINTETICOS.md)).
 
 ## Cómo correrlo
 
@@ -19,7 +21,7 @@ make run                        # pipeline completo sobre datos/practica -> sali
 make check                      # valida el formato de la entrega
 make score                      # puntaje (réplica del oficial)   |   make score-oficial: el script del desafío
 make demo                       # dashboard -> salida/practica/dashboard.html
-make test                       # 52 tests (incluye punta a punta)
+make test                       # 55 tests (incluye punta a punta)
 make validar                    # robustez: variantes ensuciadas, submuestreadas, sin un tema, otras semillas
 ```
 
@@ -106,9 +108,10 @@ radar/                 código
   coordinacion/        señales SQL y detección de grupos
   eval/                réplica del puntaje y validación de robustez
   llm.py · embed.py · texto.py · demo.py · cli.py
-tests/                 52 tests (unidades con casos borde + etapas de punta a punta)
-experimentos/          E01–E31: hipótesis, medición y decisión
-docs/                  PLAN · EVALUACION · VALIDACION · TAREAS · ROADMAP · PITCH
+tests/                 55 tests (unidades con casos borde + etapas de punta a punta)
+experimentos/          E01–E37: hipótesis, medición y decisión
+docs/                  PLAN · EVALUACION · VALIDACION · SINTETICOS · TAREAS · ROADMAP · PITCH
+sinteticos/            generadores de sets sintéticos de prueba
 config.yaml            todos los parámetros, cada uno con el experimento que lo justifica
 ```
 

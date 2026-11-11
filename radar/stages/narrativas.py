@@ -166,7 +166,8 @@ def describir(c: pd.DataFrame, cfg: dict, titulos: dict[int, str] | None = None)
     for n, g in c[c["narr"] >= 0].groupby("narr"):
         etiqueta = f"n{int(n):02d}"
         nucleo = g[~g["heredado"]]
-        origen = origen_robusto(nucleo["ts"] if len(nucleo) else g["ts"], cfg["origen_ventana_h"], cfg["origen_minimo"])
+        minimo = max(cfg["origen_minimo"], int(cfg.get("origen_minimo_frac", 0.0) * len(g)))  # relativo al volumen (E37)
+        origen = origen_robusto(nucleo["ts"] if len(nucleo) else g["ts"], cfg["origen_ventana_h"], minimo)
         filas.append({"narrativa": etiqueta,
                       "titulo": titulos.get(int(n)) or titulo_representativo(
                           nucleo.loc[(nucleo["postura"] == "apoya") & nucleo["respuesta_a"].isna(), "texto"]),

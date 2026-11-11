@@ -8,8 +8,8 @@ tests) sobre el set de práctica. Reproducir: `make run && make score` y `make v
 | | Puntos | Detalle |
 |---|---|---|
 | Narrativas | **29,70 / 30** | B-cubed F1 0,991 · ruido F1 0,970 · postura macro-F1 0,995 · origen emergentes 1,0 |
-| Coordinación | **24,06 / 25** | P 0,926 · R 0,983 · F1 0,954 · grupos B-cubed 0,983 |
-| **Total automático** | **53,76 / 55** | línea base oficial del desafío: ~17 / 55 |
+| Coordinación | **23,92 / 25** | P 0,911 · R 0,983 · F1 0,946 · grupos B-cubed 0,983 |
+| **Total automático** | **53,62 / 55** | línea base oficial del desafío: ~17 / 55 |
 | Tiempo | 14 s (caché de embeddings caliente) · ~60 s en frío | Apple M5, 16 GB, sin GPU dedicada |
 | Costo IA | USD 0 sin LLM; ~13 llamadas por corrida con LLM | |
 
@@ -27,18 +27,20 @@ Operaciones detectadas en práctica (sin mirar la verdad):
 
 | Variante | Narr. | Coord. | Total | Lectura |
 |---|---|---|---|---|
-| completo | 29,70 | 24,06 | 53,76 | referencia |
-| ensuciado (2% typos, ids duplicados, fechas rotas, filas desordenadas) | 29,67 | 23,99 | 53,66 | **datos sucios no lo afectan** |
-| semilla 7 / semilla 123 | 29,72 / 29,21 | 24,64 / 23,86 | 54,36 / 53,07 | estable ante el azar de Leiden |
-| submuestra 75% | 28,87 | 20,53 | 49,40 | menos volumen: degrada suave |
-| primera mitad (7 días) | 28,44 | 20,18 | 48,62 | menos repeticiones; la postura de 3 narrativas se invierte |
-| sin colectivo | 29,63 | 24,64 | 54,27 | 2 de 3 temas: igual |
-| sin hospital | 29,73 | 21,71 | 51,44 | |
+| completo | 29,70 | 23,92 | 53,62 | referencia |
+| ensuciado (2% typos, ids duplicados, fechas rotas, filas desordenadas) | 29,67 | 24,64 | 54,31 | **datos sucios no lo afectan** |
+| semilla 7 / semilla 123 | 29,72 / 29,21 | 23,78 / 23,79 | 53,50 / 53,00 | estable ante el azar de Leiden |
+| submuestra 75% | 28,87 | 21,95 | 50,82 | menos volumen: degrada suave |
+| primera mitad (7 días) | 28,44 | 21,22 | 49,66 | menos repeticiones; la postura de 3 narrativas se invierte |
+| sin colectivo | 29,63 | 24,27 | 53,90 | 2 de 3 temas: igual |
+| sin hospital | 29,73 | 24,53 | 54,26 | |
+| solo litio | 29,56 | 24,53 | 54,09 | un único tema |
 | sin litio | 28,22 | 10,92 | 39,14 | ⚠ techo: C1 y C2 empujan narrativas de litio |
-| solo litio | 25,06 | 23,81 | 48,87 | ⚠ un único tema: el origen de L5 falla |
-| solo hospital | 29,79 | 10,25 | 40,04 | ⚠ techo: solo C3 es detectable |
+| solo hospital | 29,79 | 12,00 | 41,79 | ⚠ techo: solo C3 es detectable |
 | solo colectivo | 29,79 | 0,71 | 30,50 | ⚠ techo: ninguna campaña empuja colectivo |
 | **sin respuestas** (`respuesta_a` vacío) | 12,08 | 20,56 | 32,64 | modo degradado automático (E32); sin él: 1,81 |
+| **sintético: temas nuevos** | 29,72 | 15,75 | 45,47 | ver [SINTETICOS.md](SINTETICOS.md) |
+| **sintético: campañas nuevas** | 28,91 | 15,85 | 44,76 | ver [SINTETICOS.md](SINTETICOS.md) |
 
 ⚠ En `sin_*`/`solo_*` las cuentas de campaña siguen en la verdad aunque su actividad coordinada esté en el tema
 quitado (solo queda su actividad de "cobertura"): el recall tiene un techo bajo que no es error del método.
@@ -69,3 +71,6 @@ quitado (solo queda su actividad de "cobertura"): el recall tiene un techo bajo 
 | E27 | Re-partición recursiva | **Refutada** (crea grupos falsos) |
 | E31 | "Lo que empuja una operación es el lado que apoya" | **Descartada**: operaciones dudosas romperían narrativas sanas |
 | E32 | ¿Sobrevive sin respuestas? | **No** (1,8/55) → modo degradado por significado: 32,6/55 |
+| E33–E34 | Una campaña que nadie discute queda como ruido e invisible | **Confirmada** → el ruido se alinea como clase propia |
+| E33/E35/E36 | Detectar campañas que rotan subgrupos (expansión / peso por evento / foco) | **Refutadas**: ninguna mejora el promedio; límite documentado |
+| E37 | El origen se adelanta por comentarios sueltos mal asignados | **Confirmada** → mínimo relativo al volumen (0,5%) |

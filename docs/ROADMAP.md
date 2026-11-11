@@ -6,7 +6,7 @@ Medimos todo con la réplica del puntaje oficial (`make score`). Línea base ofi
 |---|---|---|
 | **0 · Base** | Ingest a DuckDB/Parquet, réplica del puntaje, validador de formato, elección de embeddings | ✅ e5-small elegido (E01–E02) |
 | **1 · v1 completa** | Narrativas + coordinación + entrega de punta a punta con un comando | ✅ |
-| **2 · Puntaje** | Postura, origen, ruido; coordinación robusta | ✅ **53,76/55** en práctica |
+| **2 · Puntaje** | Postura, origen, ruido; coordinación robusta | ✅ **53,62/55** en práctica |
 | **3 · Producto** | Validación de robustez, profesor LLM opcional, dashboard, README de almacenamiento/escala | ✅ |
 | **4 · Entrega** | Set final -> `entrega/`, video, Hacki, pitch | ⏳ viernes 13 (ver checklist) |
 
