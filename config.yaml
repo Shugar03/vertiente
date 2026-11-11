@@ -23,9 +23,11 @@ narrativas:
   origen_minimo: 5
 
 coordinacion:
-  ventana_min: 30                           # E17: ráfaga alineada (misma publicación + narrativa + postura)
-  min_sincronias: 3                         # "las mismas cuentas juntas, una y otra vez"
-  min_sincronia_norm: 0.15                  # centro de la meseta estable 0.1–0.2 (E17/E20–E22)
+  # E25: elegido por PROMEDIO y PEOR CASO sobre variantes de estrés (no por el set completo): media 23,2 / peor 21,4
+  ventana_min: 30                           # sincronía alineada: misma publicación + narrativa + postura, <= 30 min
+  min_sincronias: 2                         # repetición en >= 2 publicaciones distintas
+  min_sincronia_norm: 0.1                   # fracción de publicaciones de la cuenta menos activa
+  min_vecinos_comunes: 3                    # las operaciones forman triángulos; el azar genuino no
   min_tamano: 5
   min_densidad: 0.3
 

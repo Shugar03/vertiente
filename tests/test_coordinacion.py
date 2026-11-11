@@ -56,12 +56,21 @@ def test_sincronias_ignoran_narrativa_distinta(con):
 
 def test_detectar_grupos_encuentra_la_operacion_y_no_el_pico_viral(con):
     s = sincronias_alineadas(con, "cm", ventana_min=30)
-    r = respuestas_entre_cuentas(con, "cm")
-    grupos = detectar_grupos(s, r, min_sincronias=3, min_sincronia_norm=0.2, min_tamano=5, min_densidad=0.3, seed=1)
+    grupos = detectar_grupos(s, min_sincronias=2, min_sincronia_norm=0.1, min_vecinos_comunes=3,
+                             min_tamano=5, min_densidad=0.3, seed=1)
     assert {k for k in grupos} == {f"op{k}" for k in range(6)}
     assert len(set(grupos.values())) == 1
 
 
+def test_filtrar_por_vecinos_comunes_quita_aristas_sueltas():
+    from radar.coordinacion.grafo import filtrar_vecinos_comunes
+    clique = [(f"a{i}", f"a{j}") for i in range(5) for j in range(i + 1, 5)]
+    sueltas = [("a0", "z1"), ("z1", "z2")]  # sin triángulos
+    e = pd.DataFrame(clique + sueltas, columns=["x", "y"])
+    out = filtrar_vecinos_comunes(e, min_comunes=2)
+    assert set(map(tuple, out[["x", "y"]].values)) == set(clique)
+
+
 def test_detectar_grupos_sin_aristas():
     vacio = pd.DataFrame(columns=["x", "y", "sync", "sync_n"])
-    assert detectar_grupos(vacio, pd.DataFrame(columns=["x", "y", "resp"]), 3, 0.2, 5, 0.3, 1) == {}
+    assert detectar_grupos(vacio, 2, 0.1, 3, 5, 0.3, 1) == {}
