@@ -32,6 +32,9 @@ caso, porque el set final es otro. Radar: narrativas y coordinación a escala, e
 
 ## Video (≤ 3 min, para Hacki)
 
+Storyboard de producción completo (escenas, locución, subtítulos, cómo grabar): [video/STORYBOARD.md](video/STORYBOARD.md).
+Resumen:
+
 1. Terminal: `make entrega` corriendo (acelerado) → `OK: formato válido`.
 2. `make score` sobre práctica: 53,62 / 55.
 3. Dashboard: reproducción en vivo + hover en una narrativa + panel "Quién lo empuja".

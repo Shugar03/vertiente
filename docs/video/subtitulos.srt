@@ -1,0 +1,75 @@
+1
+00:00:00,500 --> 00:00:04,000
+Doscientos mil comentarios sobre temas públicos.
+
+2
+00:00:04,000 --> 00:00:08,000
+¿Qué se está diciendo? ¿Y qué parte está armada?
+
+3
+00:00:08,300 --> 00:00:11,500
+Nuestra idea: la conversación misma es la etiqueta.
+
+4
+00:00:11,500 --> 00:00:16,000
+Cuando alguien responde con un argumento,
+discute la misma narrativa desde el otro lado.
+
+5
+00:00:16,000 --> 00:00:20,000
+Y una operación no se ve en un comentario:
+se ve en la repetición.
+
+6
+00:00:20,300 --> 00:00:24,500
+Todo corre con un solo comando, en una notebook común:
+
+7
+00:00:24,500 --> 00:00:32,000
+quince segundos para doscientos mil comentarios,
+sin GPU y sin gastar un peso en IA.
+
+8
+00:00:32,300 --> 00:00:36,000
+Encuentra solas las trece narrativas:
+
+9
+00:00:36,000 --> 00:00:40,000
+arriba los que apoyan, abajo los que rechazan.
+
+10
+00:00:40,300 --> 00:00:43,500
+Reproducimos los catorce días.
+
+11
+00:00:43,500 --> 00:00:48,000
+El día seis, a la una de la mañana, aparece un rumor nuevo…
+
+12
+00:00:48,000 --> 00:00:55,000
+y en el mismo minuto, veinticuatro cuentas creadas el día anterior
+empiezan a empujarlo de madrugada.
+
+13
+00:00:55,300 --> 00:00:59,500
+Tres operaciones, con su perfil: cuentas nuevas,
+cuentas antiguas que se responden entre sí, actividad nocturna.
+
+14
+00:00:59,500 --> 00:01:05,000
+Qué empujan y desde cuándo.
+
+15
+00:01:05,300 --> 00:01:10,000
+Lo medimos con el puntaje oficial:
+53,6 sobre 55.
+
+16
+00:01:10,000 --> 00:01:15,000
+Y lo probamos con temas que nunca vio,
+datos sucios y menos volumen.
+
+17
+00:01:15,300 --> 00:01:22,000
+Radar: narrativas y coordinación a escala.
+Explicable, rápido y barato.
