@@ -16,16 +16,20 @@ def sincronias_alineadas(con: duckdb.DuckDBPyConnection, tabla: str, ventana_min
     """Pares (x<y) con: sync = publicaciones distintas con sincronía alineada; sync_n = sync / publicaciones (con
     narrativa) de la cuenta menos activa.
 
-    `tabla`: comentario_id, cuenta_id, publicacion_id, ts, narrativa, postura (narrativa vacía = ruido, se ignora).
+    `tabla`: comentario_id, cuenta_id, publicacion_id, ts, narrativa, postura.
+    Clave de alineación: narrativa+postura; los comentarios de ruido forman UNA clase propia (E33–E34: una campaña
+    cuyo texto termina como ruido —nadie la discute— no debe volverse invisible; mejoró promedio y peor caso).
     """
     return con.execute(f"""
-        with n as (select * from {tabla} where coalesce(narrativa, '') <> '' and ts is not null),
+        with n as (select *, case when coalesce(narrativa, '') <> '' then narrativa || '/' || coalesce(postura, '')
+                                  else 'ruido' end as clave
+                   from {tabla} where ts is not null),
         act as (select cuenta_id, count(distinct publicacion_id) d from n group by 1),
         s as (
             select least(a.cuenta_id, b.cuenta_id) x, greatest(a.cuenta_id, b.cuenta_id) y,
                    count(distinct a.publicacion_id) sync
             from n a join n b
-              on a.publicacion_id = b.publicacion_id and a.narrativa = b.narrativa and a.postura = b.postura
+              on a.publicacion_id = b.publicacion_id and a.clave = b.clave
              and a.cuenta_id <> b.cuenta_id
              and b.ts >= a.ts and b.ts <= a.ts + interval {int(ventana_min)} minute
             group by 1, 2)

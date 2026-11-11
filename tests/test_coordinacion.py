@@ -54,6 +54,16 @@ def test_sincronias_ignoran_narrativa_distinta(con):
     assert s[(s.x.str.startswith("g") & s.y.str.startswith("op")) | (s.x.str.startswith("op") & s.y.str.startswith("g"))].empty
 
 
+def test_ruido_se_alinea_como_una_clase_propia():
+    c = duckdb.connect()
+    filas = [dict(comentario_id=f"c{p}{k}", cuenta_id=f"r{k}", publicacion_id=f"p{p}",
+                  ts=T0 + timedelta(minutes=p * 600 + k), narrativa="", postura="", respuesta_a=None)
+             for p in range(3) for k in range(3)]
+    c.register("cm", pd.DataFrame(filas))
+    s = sincronias_alineadas(c, "cm", ventana_min=30)
+    assert s[(s.x == "r0") & (s.y == "r1")].sync.item() == 3
+
+
 def test_detectar_grupos_encuentra_la_operacion_y_no_el_pico_viral(con):
     s = sincronias_alineadas(con, "cm", ventana_min=30)
     grupos = detectar_grupos(s, min_sincronias=2, min_sincronia_norm=0.1, min_vecinos_comunes=3,
