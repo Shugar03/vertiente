@@ -282,6 +282,9 @@ $("#vivo").addEventListener("click", () => {
   let b = 0; $("#vivo").textContent = "■ Detener";
   timer = setInterval(() => { mostrarHasta(b); if (++b >= D.n_bins) { clearInterval(timer); timer = null; mostrarHasta(D.n_bins - 1); $("#vivo").textContent = "▶ Reproducir en vivo"; } }, 60000 / D.n_bins);
 });
+// #t=<bloque>: fija el momento de la reproducción (lo usa la grabación del video)
+const mt = location.hash.match(/t=(\d+)/);
+if (mt) mostrarHasta(Math.min(+mt[1], D.n_bins - 1));
 $("#tema").addEventListener("click", () => {
   const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   r.dataset.theme = oscuro ? "light" : "dark";

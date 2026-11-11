@@ -27,7 +27,11 @@ make validar                    # robustez: variantes ensuciadas, submuestreadas
 
 ```bash
 make entrega                    # = run + check sobre datos/final -> entrega/ (se commitea)
+make final                      # todo el viernes: espera el set, corre, valida, dashboard + video, commit y push
+make publicar                   # repo público (requisito excluyente al cierre)
 ```
+
+Video de demo (práctica): [docs/demo_practica.mp4](docs/demo_practica.mp4) — se regenera con `scripts/grabar_video.sh`.
 
 LLM opcional: copiar `.env.example` a `.env` y poner `ANTHROPIC_API_KEY`. Sin clave el pipeline corre igual (usa la
 caché `cache/llm/` si existe y, si no, reglas locales).

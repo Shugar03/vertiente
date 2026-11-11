@@ -3,7 +3,7 @@ SALIDA  ?= salida/$(notdir $(DATOS))
 DESAFIO := https://github.com/qualydata-org/desafio-qualydata.git
 MODELO  := intfloat/multilingual-e5-small
 
-.PHONY: setup datos modelos run score score-oficial check entrega test validar demo limpiar
+.PHONY: setup datos modelos run score score-oficial check entrega test validar demo limpiar final publicar
 
 setup: datos
 	uv sync
@@ -49,3 +49,11 @@ demo:
 
 limpiar:
 	rm -rf interim/*/duckdb_tmp salida
+
+# VIERNES: espera el set final, corre, valida, commitea entrega/ y hace push (ver scripts/entrega_final.sh).
+final:
+	./scripts/entrega_final.sh
+
+# Requisito excluyente al cierre: repo público.
+publicar:
+	gh repo edit --visibility public --accept-visibility-change-consequences
