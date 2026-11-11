@@ -25,7 +25,7 @@ narrativas:
 coordinacion:
   ventana_min: 30                           # E17: ráfaga alineada (misma publicación + narrativa + postura)
   min_sincronias: 3                         # "las mismas cuentas juntas, una y otra vez"
-  min_sincronia_norm: 0.2                   # fracción de publicaciones de la cuenta menos activa
+  min_sincronia_norm: 0.15                  # centro de la meseta estable 0.1–0.2 (E17/E20–E22)
   min_tamano: 5
   min_densidad: 0.3
 
@@ -39,3 +39,4 @@ llm:
 
 duckdb:
   memory_limit: 4GB
+  max_temp: 8GB                             # tope de spill a disco (evita llenar el disco)

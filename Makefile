@@ -1,12 +1,17 @@
 DATOS   ?= datos/practica
 SALIDA  ?= salida/$(notdir $(DATOS))
 DESAFIO := https://github.com/qualydata-org/desafio-qualydata.git
+MODELO  := intfloat/multilingual-e5-small
 
-.PHONY: setup datos run score check entrega test
+.PHONY: setup datos modelos run score score-oficial check entrega test validar demo limpiar
 
 setup: datos
 	uv sync
-	# TODO(Fran): pre-descargar modelos locales a modelos/ para no depender de la red el viernes
+	$(MAKE) modelos
+
+# Baja el modelo de embeddings a la caché local para no depender de la red el viernes.
+modelos:
+	uv run python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('$(MODELO)')"
 
 datos:
 	@test -d vendor/desafio || git clone -q --depth 1 $(DESAFIO) vendor/desafio
@@ -15,7 +20,12 @@ datos:
 run:
 	uv run python -m radar run --datos $(DATOS) --salida $(SALIDA)
 
+# Puntaje local con la réplica del script oficial (radar/eval/puntaje.py).
 score:
+	uv run python -m radar score --verdad $(DATOS)/verdad --entrega $(SALIDA)
+
+# Puntaje con el script oficial del desafío (fuente de verdad).
+score-oficial:
 	uv run python vendor/desafio/evaluacion/puntuar.py --verdad $(DATOS)/verdad --entrega $(SALIDA)
 
 check:
@@ -28,3 +38,14 @@ entrega:
 
 test:
 	uv run pytest -q
+
+# Validación de robustez/generalización (dejar un tema afuera, submuestreo, datos ensuciados).
+validar:
+	uv run python -m radar.eval.validar --datos $(DATOS)
+
+# Dashboard estático a partir de la última corrida.
+demo:
+	uv run python -m radar.demo --interim interim/$(notdir $(DATOS)) --salida $(SALIDA)/dashboard.html
+
+limpiar:
+	rm -rf interim/*/duckdb_tmp salida

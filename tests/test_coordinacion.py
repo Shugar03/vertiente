@@ -1,0 +1,67 @@
+from datetime import datetime, timedelta, timezone
+
+import duckdb
+import pandas as pd
+import pytest
+
+from radar.coordinacion.grafo import detectar_grupos
+from radar.coordinacion.senales import respuestas_entre_cuentas, sincronias_alineadas
+
+T0 = datetime(2026, 9, 1, 10, 0, tzinfo=timezone.utc)
+
+
+def _comentarios():
+    filas, i = [], 0
+
+    def add(cuenta, post, minutos, narr="n01", post_="apoya", resp=None):
+        nonlocal i
+        i += 1
+        filas.append(dict(comentario_id=f"c{i}", cuenta_id=cuenta, publicacion_id=post,
+                          ts=T0 + timedelta(minutes=minutos), narrativa=narr, postura=post_, respuesta_a=resp))
+        return f"c{i}"
+
+    # operación: 6 cuentas, mismas 4 publicaciones, misma narrativa/postura, a minutos de distancia
+    for p in range(4):
+        for k in range(6):
+            add(f"op{k}", f"p{p}", p * 600 + k * 3)
+    # pico viral genuino: 30 cuentas en una sola publicación, a la vez (una sola vez)
+    for k in range(30):
+        add(f"v{k}", "pv", 100 + k)
+    # genuinos: misma narrativa entre ellos, pero cada uno en momentos distintos en cada publicación
+    for k in range(20):
+        for p in range(3):
+            add(f"g{k}", f"p{p}", p * 600 + 100 + (k * 37 + p * 113) % 480, narr="n02", post_="rechaza")
+    return pd.DataFrame(filas)
+
+
+@pytest.fixture
+def con():
+    c = duckdb.connect()
+    c.register("cm", _comentarios())
+    return c
+
+
+def test_sincronias_alineadas_cuenta_publicaciones_distintas(con):
+    s = sincronias_alineadas(con, "cm", ventana_min=30)
+    par = s[(s.x == "op0") & (s.y == "op1")].iloc[0]
+    assert par.sync == 4 and par.sync_n == pytest.approx(1.0)
+    viral = s[s.x.str.startswith("v") & s.y.str.startswith("v")]
+    assert (viral.sync <= 1).all()
+
+
+def test_sincronias_ignoran_narrativa_distinta(con):
+    s = sincronias_alineadas(con, "cm", ventana_min=30)
+    assert s[(s.x.str.startswith("g") & s.y.str.startswith("op")) | (s.x.str.startswith("op") & s.y.str.startswith("g"))].empty
+
+
+def test_detectar_grupos_encuentra_la_operacion_y_no_el_pico_viral(con):
+    s = sincronias_alineadas(con, "cm", ventana_min=30)
+    r = respuestas_entre_cuentas(con, "cm")
+    grupos = detectar_grupos(s, r, min_sincronias=3, min_sincronia_norm=0.2, min_tamano=5, min_densidad=0.3, seed=1)
+    assert {k for k in grupos} == {f"op{k}" for k in range(6)}
+    assert len(set(grupos.values())) == 1
+
+
+def test_detectar_grupos_sin_aristas():
+    vacio = pd.DataFrame(columns=["x", "y", "sync", "sync_n"])
+    assert detectar_grupos(vacio, pd.DataFrame(columns=["x", "y", "resp"]), 3, 0.2, 5, 0.3, 1) == {}
