@@ -21,7 +21,7 @@ make run                        # pipeline completo sobre datos/practica -> sali
 make check                      # valida el formato de la entrega
 make score                      # puntaje (réplica del oficial)   |   make score-oficial: el script del desafío
 make demo                       # dashboard -> salida/practica/dashboard.html
-make test                       # 55 tests (incluye punta a punta)
+make test                       # 76 tests, cobertura 93% (pipeline de producción ≈ 98%)
 make validar                    # robustez: variantes ensuciadas, submuestreadas, sin un tema, otras semillas
 ```
 
@@ -108,7 +108,7 @@ radar/                 código
   coordinacion/        señales SQL y detección de grupos
   eval/                réplica del puntaje y validación de robustez
   llm.py · embed.py · texto.py · demo.py · cli.py
-tests/                 55 tests (unidades con casos borde + etapas de punta a punta)
+tests/                 76 tests (unidades con casos borde + etapas de punta a punta), cobertura 93%
 experimentos/          E01–E37: hipótesis, medición y decisión
 docs/                  PLAN · EVALUACION · VALIDACION · SINTETICOS · TAREAS · ROADMAP · PITCH
 sinteticos/            generadores de sets sintéticos de prueba

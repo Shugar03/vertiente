@@ -113,4 +113,4 @@ datos/<set>/*.csv.gz ─► INGEST (DuckDB) ────────────
 - Sin LLM funciona completo; con LLM, caché commiteable (`cache/llm/`) y respaldo ante cualquier falla.
 - Determinístico: textos ordenados por hash, aristas ordenadas, semillas fijas (E26).
 - DuckDB con tope de memoria y de spill a disco (un experimento llegó a escribir 107 GB de temporales; ya no puede).
-- `make check` valida el formato contra las trampas del script oficial; `make test` (52 tests); `make validar`.
+- `make check` valida el formato contra las trampas del script oficial; `make test` (76 tests, cobertura 93%); `make validar`.
