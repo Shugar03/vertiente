@@ -1,0 +1,15 @@
+# datos del desafío (se bajan con `make datos`; el final NO se sube)
+datos/
+salida/
+interim/
+vendor/
+modelos/
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+# secretos
+.env
+*.pem
+# OJO: entrega/ y cache/llm/ SÍ se commitean

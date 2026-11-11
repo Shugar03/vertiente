@@ -1,0 +1,31 @@
+# Todos los parámetros acá. Nada de números mágicos en el código.
+# Regla: umbrales RELATIVOS (percentiles, z-scores), nunca atados a los temas de práctica.
+
+seed: 42
+interim_dir: interim
+tz: "-03:00"
+
+embeddings:
+  modelo: intfloat/multilingual-e5-small   # candidato B: EmbeddingGemma 2 (se decide en Fase 0)
+  batch: 256
+  dispositivo: auto                         # auto | cpu | mps
+
+narrativas:
+  respuesta_corta_max_chars: 30             # respuestas "sin contenido" que heredan del padre
+  herencia_profundidad_max: 10
+  muestra_llm_postura: 3000
+
+coordinacion:
+  ventana_min: 15                           # co-ocurrencia en la misma publicación
+  min_coincidencias: 3                      # repetición mínima entre pares de cuentas
+
+llm:
+  proveedor: null                           # null = tomar de la variable LLM_PROVIDER (.env)
+  temperatura: 0
+  max_concurrencia: 16
+  timeout_s: 30
+  reintentos: 4
+  cache_dir: cache/llm                      # se commitea: permite re-correr sin clave
+
+duckdb:
+  memory_limit: 4GB
