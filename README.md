@@ -90,7 +90,9 @@ Costo marginal de IA por comentario: ~0 (los LLM solo ven una muestra por narrat
 
 ## Código y librerías preexistentes
 
-Todo el código de este repositorio se escribió durante el hackathon. Librerías públicas usadas (versiones exactas
+Todo el código de este repositorio se escribió durante el hackathon (desde el miércoles 11). Se desarrolló con
+asistencia de un asistente de código con IA (Claude Code); el uso de IA dentro del pipeline se reporta en
+`entrega/costo.json` (en la configuración por defecto, cero). Librerías públicas usadas (versiones exactas
 en `uv.lock`): duckdb, pandas, pyarrow, numpy, scikit-learn, torch, sentence-transformers (modelo
 `intfloat/multilingual-e5-small`), python-igraph, leidenalg, anthropic (opcional), pytest. Del desafío se usa su
 script oficial de puntaje solo como referencia (`make score-oficial`, clonado en `vendor/`, no versionado).

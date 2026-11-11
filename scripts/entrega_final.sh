@@ -2,7 +2,7 @@
 # Entrega final de punta a punta (viernes 13). Un solo comando: `make final`.
 #
 #   1. Espera a que el set final aparezca (en el repo del desafío o en datos/final/), revisando cada INTERVALO s.
-#   2. Corre el pipeline -> entrega/, valida el formato, corre los tests, genera dashboard y video de demo.
+#   2. Corre el pipeline -> entrega/ (solo los 4 archivos oficiales), valida, testea; dashboard y video -> demo/.
 #   3. Commitea entrega/ (+ caché del LLM) y hace push.
 #   4. Si PUBLICAR=1, pasa el repo a público (requisito excluyente al cierre).
 #
@@ -37,9 +37,10 @@ uv run python scripts/check_entrega.py --datos "$FINAL" --entrega entrega
 log "tests"
 uv run pytest -q
 log "dashboard"
-uv run python -m radar.demo --interim "interim/$(basename "$(cd "$FINAL" && pwd -P)")" --salida entrega/dashboard.html
+mkdir -p demo
+uv run python -m radar.demo --interim "interim/$(basename "$(cd "$FINAL" && pwd -P)")" --salida demo/dashboard.html
 log "video de demo"
-./scripts/grabar_video.sh entrega/dashboard.html entrega/costo.json entrega/demo.mp4 || log "no se pudo grabar el video (¿Chrome/ffmpeg?)"
+./scripts/grabar_video.sh demo/dashboard.html entrega/costo.json demo/demo.mp4 || log "no se pudo grabar el video (¿Chrome/ffmpeg?)"
 cat entrega/costo.json
 
 if [ "${NO_PUSH:-0}" = "1" ]; then
@@ -47,7 +48,8 @@ if [ "${NO_PUSH:-0}" = "1" ]; then
   exit 0
 fi
 
-git add entrega cache/llm
+# entrega/ lleva SOLO los 4 archivos oficiales; dashboard y video van en demo/
+git add entrega cache/llm demo
 git commit -m "Entrega final: resultado del pipeline sobre el set final" || log "nada nuevo para commitear"
 git push origin HEAD
 log "push hecho: $(git rev-parse --short HEAD)"
