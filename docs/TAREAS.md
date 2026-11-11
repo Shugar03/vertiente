@@ -1,45 +1,28 @@
-# División tentativa de tareas
+# Tareas
 
-Roles genéricos; se ajustan sobre la marcha. Cada uno es dueño de sus contratos (ver `PLAN.md`).
+El pipeline, los tests, la validación, el dashboard y la documentación están hechos (ver `ROADMAP.md`).
+Lo que queda es humano o depende del set final.
 
-## Fran — datos y plataforma (bases de datos)
+## Fran — datos y plataforma
 
-- [ ] `make setup` / `make datos`: entorno, modelos locales, datos de práctica, script oficial en `vendor/`.
-- [ ] **ingest**: CSV.gz → Parquet en DuckDB; limpieza, zona -03:00, `texto_norm`, `texto_hash`, dedup.
-- [ ] Casos borde de datos sucios (ids duplicados, fechas rotas, cuentas sin perfil, respuestas huérfanas/ciclos).
-- [ ] Tablas SQL de co-ocurrencia de cuentas (misma publicación + ventana) y respuestas mutuas → para Antony.
-- [ ] `make run` de punta a punta, ejecución en paralelo de narrativas y coordinación.
-- [ ] Medición de tiempo/tokens/USD por etapa → `costo.json` automático.
-- [ ] `make check` (validador de formato) y `make score`.
-- [ ] Validación dejando un tema afuera / por tiempo / datos ensuciados.
-- [ ] README: almacenamiento (por qué DuckDB + Parquet) y cómo escala a millones/día.
-- [ ] Viernes: correr el set final, commitear `entrega/`, **pasar el repo a público**.
+- [ ] Ensayo general en tu máquina: `git clone … && make setup && make run && make check && make score` (cronometrado).
+- [ ] Revisar y defender en el pitch "Almacenamiento" y "Cómo escala" del README (es tu terreno).
+- [ ] Viernes: correr `make entrega` sobre el set final, commitear `entrega/`, **pasar el repo a público**.
 
 ## Sebastián — narrativas
 
-- [ ] Fase 0: comparar multilingual-e5-small vs EmbeddingGemma 2 (tiempo + B-cubed con el script oficial).
-- [ ] Embeddings con caché por hash.
-- [ ] Ruido: reglas (pregunta, saludo, emoji, reacción) + clasificador sobre embeddings.
-- [ ] Agrupamiento fino (narrativa × postura); reducción de dimensión.
-- [ ] Herencia por respuestas (acuerdo/desacuerdo).
-- [ ] Capa LLM (`radar/llm.py`): proveedor intercambiable, caché, reintentos, respaldo sin clave.
-- [ ] LLM por grupo: afirmación, unir variantes de redacción, emparejar pro/contra.
-- [ ] Destilación de postura: LLM etiqueta muestra → clasificador local.
-- [ ] Origen: primer pico real de cada narrativa.
-- [ ] Títulos y frases clave de `narrativas.csv`.
+- [ ] Leer `docs/VALIDACION.md` y `experimentos/` para responder preguntas técnicas (bitácora de hipótesis).
+- [ ] Conseguir una `ANTHROPIC_API_KEY` (créditos del evento si los dan) y probar `make run` con el profesor;
+      commitear `cache/llm/` resultante.
+- [ ] Viernes: revisar los títulos de `entrega/narrativas.csv` (sin editarlos a mano: está prohibido).
 
 ## Antony — coordinación y demo
 
-- [ ] Rasgos de cuenta: antigüedad relativa, seguidores/siguiendo, actividad nocturna, hashtags, textos copiados.
-- [ ] v1: textos casi idénticos + ráfagas (campañas tipo C1/C3).
-- [ ] Grafo de co-ocurrencia **contra lo esperable** (coincidir en un posteo viral vale poco) + respuestas mutuas (tipo C2).
-- [ ] Comunidades (Leiden) y filtro de grupos densos/anómalos; umbral optimizado por precisión.
-- [ ] Vincular cada operación con la narrativa que empuja (para la demo: "quién lo empuja").
-- [ ] Dashboard: línea de tiempo por narrativa (apoya/rechaza), operaciones, y modo "en vivo" con alertas.
-- [ ] Video (≤ 3 min) y pitch.
+- [ ] Ensayar la demo con `make demo` → `salida/practica/dashboard.html` (botón ▶ Reproducir en vivo).
+- [ ] Grabar el video (≤ 3 min, guion en `docs/PITCH.md`) y cargarlo en Hacki.
+- [ ] Pitch: guion de 3 minutos + preguntas probables en `docs/PITCH.md`.
 
 ## Compartido
 
-- [ ] Preguntas a la organización (ver `EVALUACION.md`).
-- [ ] Revisar PRs del otro antes de mergear a `main`.
-- [ ] Ensayo general el jueves a la noche.
+- [ ] Preguntar a la organización: ¿premios separados Big Data / Streaming? ¿hora del set final y del cierre?
+      ¿créditos de API? ¿el jurado re-corre con internet?

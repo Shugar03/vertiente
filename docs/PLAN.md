@@ -1,60 +1,64 @@
-# Plan — mapa del sistema
+# Plan — mapa del sistema (estado final)
+
+> Este documento empezó como plan y se actualizó con lo que efectivamente se construyó. Las decisiones que cambiaron
+> respecto del plan original están marcadas con **Cambio** y justificadas por experimentos (`experimentos/`).
 
 ## Principio
 
-**Lo que es BERT corre local; lo que es LLM va por API, y solo como "profesor".** El LLM nunca procesa comentario por
-comentario: nombra grupos, une variantes y etiqueta una muestra; con esa muestra se entrenan clasificadores locales que
-deciden los ~150.000 comentarios en segundos (destilación).
+**Lo local hace el trabajo; el LLM (opcional, por API) solo juzga donde las señales locales son débiles.**
+**Cambio:** el plan preveía destilar postura con un LLM etiquetando una muestra. No hizo falta: la estructura de
+respuestas da la postura gratis (E03–E06). El LLM quedó para una sola decisión por narrativa: qué bando afirma, y su
+título (≈13 llamadas por corrida).
 
 ## Mapa
 
 ```
-                    ┌──────────────────────── ingest (Fran) ────────────────────────┐
-datos/<set>/*.csv.gz│ limpiar · normalizar texto · zona -03:00 · hash · dedup        │──► interim/*.parquet (DuckDB)
-                    └──────────────┬──────────────────────────────────┬─────────────┘
-                                   │                                  │
-          ┌────────── NARRATIVAS (Sebastián) ──────────┐   ┌──── COORDINACIÓN (Antony) ────┐
-          │ 1 embeddings de textos únicos (local)       │   │ A rasgos de cuenta            │
-          │ 2 ruido: reglas + clasificador              │   │ B grafo co-ocurrencia en      │
-          │ 3 agrupamiento fino (narrativa × postura)   │   │   misma publicación/ventana,  │
-          │ 4 LLM por grupo: afirmación, postura,       │   │   pesado contra lo esperable  │
-          │   unir variantes, emparejar pro/contra      │   │   + respuestas mutuas (SQL)   │
-          │ 5 LLM etiqueta muestra → clasificador de    │   │ C comunidades (Leiden) →      │
-          │   postura local (destilación)               │   │   grupos densos y anómalos    │
-          │ 6 propagar: kNN + herencia por respuestas   │   │ D umbral por precisión        │
-          │ 7 origen: primer pico real de cada grupo    │   └───────────────┬───────────────┘
-          └──────────────────────┬──────────────────────┘                   │
-                                 └──────────── escribir entrega/ ◄──────────┘
-                                   comentarios.csv · narrativas.csv · cuentas.csv · costo.json
-                                                     │
-                                       make check (formato) · make score (oficial)
+datos/<set>/*.csv.gz ─► INGEST (DuckDB) ─────────────────────────────► interim/<set>/*.parquet
+                          limpiar · dedup · fechas · respuestas huérfanas/cíclicas · texto_norm · hash
+                                   │
+                          NARRATIVAS
+                          1 embeddings e5-small de textos únicos (caché por hash)
+                          2 microgrupos: Leiden sobre kNN
+                          3 grafo de microgrupos por respuestas con contenido (misma narrativa, postura opuesta)
+                          4 ruido: textos frecuentes sin respuestas (umbral adaptativo) + microgrupos sin respuestas
+                          5 narrativas = comunidades; postura = bipartición espectral; lado que afirma: señales
+                            locales o profesor LLM
+                          6 herencia de "acompañamiento" (tal cual, coincido) por la cadena de respuestas
+                          7 origen robusto; título; frases clave c-TF-IDF
+                                   │
+                          COORDINACIÓN (usa las narrativas predichas)
+                          A sincronía alineada (SQL): misma publicación + narrativa + postura, ≤ 30 min,
+                            en ≥ 2 publicaciones, normalizada por actividad
+                          B se descartan aristas sin vecinos comunes (el azar no forma triángulos)
+                          C Leiden + densidad del grupo + rescate de núcleo k-core; orden determinístico
+                                   │
+                          ENTREGA: comentarios.csv · narrativas.csv · cuentas.csv · costo.json  (+ dashboard.html)
 ```
 
-Narrativas y coordinación son **independientes** → corren en paralelo.
+**Cambio:** coordinación ya no corre en paralelo con narrativas: la usa (E17). La señal que separa a las campañas
+—empujar lo mismo— necesita saber qué narrativa y qué postura tiene cada comentario.
 
 ## Contratos entre etapas (Parquet en `interim/<set>/`)
 
-| Archivo | Dueño | Columnas |
+| Archivo | Etapa | Columnas |
 |---|---|---|
-| `comentarios.parquet` | Fran | `comentario_id, publicacion_id, cuenta_id, ts (tz -03:00), texto, texto_norm, texto_hash, respuesta_a, me_gusta` |
-| `cuentas.parquet` | Fran | `cuenta_id, usuario, fecha_creacion, seguidores, siguiendo` (+ cuentas que comentan sin perfil) |
-| `publicaciones.parquet` | Fran | `publicacion_id, fuente_id, ts, titular` |
-| `embeddings.parquet` | Sebastián | `texto_hash, vector` (caché por hash) |
-| `narrativas_asig.parquet` | Sebastián | `comentario_id, narrativa, postura, confianza` |
-| `narrativas_meta.parquet` | Sebastián | `narrativa, titulo, frases_clave, fecha_origen` |
-| `cuentas_feat.parquet` | Antony/Fran | `cuenta_id, …rasgos` |
-| `grupos.parquet` | Antony | `cuenta_id, grupo, score` |
-
-`entrega` lee solo estos contratos. Cambiar un contrato = avisar a los otros dos.
+| `comentarios.parquet` | ingest | `comentario_id, publicacion_id, cuenta_id, ts, texto, respuesta_a, me_gusta, texto_norm, texto_hash` |
+| `cuentas.parquet` | ingest | `cuenta_id, usuario, fecha_creacion, seguidores, siguiendo` (+ cuentas que comentan sin perfil) |
+| `publicaciones.parquet` | ingest | `publicacion_id, fuente_id, ts, titular` |
+| `narrativas_asig.parquet` | narrativas | `comentario_id, narrativa, postura, micro, heredado` |
+| `narrativas_meta.parquet` | narrativas | `narrativa, titulo, frases_clave, fecha_origen, apoya, rechaza, total` |
+| `grupos.parquet` | coordinación | `cuenta_id, grupo` |
+| `operaciones_meta.parquet` | coordinación | `grupo, cuentas, comentarios, narrativa, postura, foco, antiguedad_mediana_dias, frac_nocturna, primera_actividad` |
+| `reporte.json` | cli | reporte de calidad de datos, tiempos y costo por etapa |
+| `interim/cache_emb/*.parquet` | embeddings | `texto_hash, vector` |
 
 ## Modelos
 
-| Uso | Dónde | Candidatos (se decide en Fase 0 con datos) |
+| Uso | Dónde | Elegido |
 |---|---|---|
-| Embeddings | local | multilingual-e5-small · EmbeddingGemma 2 |
-| Clasificadores de decisión (postura, ruido, acuerdo/desacuerdo en respuestas) | local | regresión logística / MLP sobre embeddings |
-| Casos dudosos | local (opcional) | NLI multilingüe (mDeBERTa-v3-xnli) |
-| Profesor | API | el modelo más barato/rápido de OpenAI o Claude que pase la validación |
+| Embeddings | local | `intfloat/multilingual-e5-small` (E01–E02: igual calidad que EmbeddingGemma 2, 6x más rápido) |
+| Profesor (opcional) | API | `claude-opus-5-5` por defecto (`LLM_MODEL` lo cambia; `claude-haiku-5-5` abarata) |
+| Clasificadores / NLI | — | **Cambio:** no hicieron falta (la estructura de respuestas resuelve postura y ruido) |
 
 ## Casos borde
 
@@ -94,29 +98,19 @@ Narrativas y coordinación son **independientes** → corren en paralelo.
   **datos ensuciados** (submuestreo 75%, typos, horas desordenadas).
 - Todos los parámetros en `config.yaml`.
 
-## Velocidad
+## Velocidad (medido, Apple M5 16 GB)
 
-| Palanca | Efecto |
+| Etapa | Tiempo |
 |---|---|
-| Dedup de texto normalizado antes de embeber | 200k → ~97k |
-| Modelo chico, int8, ONNX/MPS, por lotes | minutos en CPU |
-| Caché de embeddings por hash | re-correr ≈ gratis |
-| Reducir dimensión (Matryoshka/UMAP) o kNN-grafo antes de agrupar | agrupamiento en segundos-minutos |
-| Vecinos aproximados (FAISS/HNSW) para propagar | segundos |
-| LLM por grupo + muestra, asíncrono, con caché | ~3.200 llamadas, < USD 1 |
-| Narrativas ‖ coordinación en paralelo | resta la etapa más corta |
-| Grafo de cuentas en SQL (DuckDB) con ventana temporal | evita explosión de pares |
-| `make setup` baja modelos antes | el viernes no dependemos de la red |
-
-**Meta:** set final en **< 10 min** en notebook y **< USD 1**. Pico de RAM estimado 4–6 GB (entra en 16 GB).
+| ingest (200k comentarios) | ~2 s |
+| embeddings de 62k textos únicos | ~40 s en frío (MPS) · 0 s con caché |
+| narrativas (kNN + Leiden + grafo + herencia) | ~8 s |
+| coordinación (2,6 M pares en SQL + grafo) | ~1 s |
+| **total** | **~15 s con caché · ~60 s en frío** |
 
 ## Confiabilidad
 
-- LLM: timeout, reintentos con espera creciente, validación del JSON; si falla ⇒ reglas de respaldo.
-- **Sin clave** ⇒ `cache/llm/` commiteada (por hash del prompt) y, si no hay caché, reglas (c-TF-IDF para nombres,
-  clasificadores con semillas para postura). Peor calidad, nunca se rompe.
-- Cada etapa escribe su Parquet ⇒ se retoma desde donde quedó.
-- Reproducible: semillas fijas, temperatura 0, `uv.lock`, Python fijo.
-- `make check` antes de cada commit de `entrega/`.
-- Logs por etapa: tiempo, filas, avisos de datos sucios. `costo.json` se genera solo.
-- **Ensayo general el jueves a la noche**: clonar de cero, `make setup && make entrega` cronometrado.
+- Sin LLM funciona completo; con LLM, caché commiteable (`cache/llm/`) y respaldo ante cualquier falla.
+- Determinístico: textos ordenados por hash, aristas ordenadas, semillas fijas (E26).
+- DuckDB con tope de memoria y de spill a disco (un experimento llegó a escribir 107 GB de temporales; ya no puede).
+- `make check` valida el formato contra las trampas del script oficial; `make test` (51 tests); `make validar`.
