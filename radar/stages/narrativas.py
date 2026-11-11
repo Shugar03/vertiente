@@ -26,7 +26,8 @@ import numpy as np
 import pandas as pd
 
 from radar.embed import Embedder
-from radar.narrativas.descripcion import frases_clave, titulo_representativo
+from radar.llm import Profesor
+from radar.narrativas.descripcion import frases_clave, limpiar_titulo, titulo_representativo
 from radar.narrativas.grafo import knn_aristas, microgrupos
 from radar.narrativas.origen import origen_robusto
 from radar.narrativas.postura import bipartir, lado_apoya
@@ -98,22 +99,57 @@ def asignar(c: pd.DataFrame, X: np.ndarray, hashes: list[str], cfg: dict, seed: 
     c = heredar(c, acomp, cfg["herencia_profundidad_max"])
 
     nucleo = c[(c["narr"] >= 0) & ~c["heredado"]].assign(es_respuesta=lambda d: d["respuesta_a"].notna())
-    apoya = lado_apoya(nucleo)
-    c["postura"] = np.where(c["narr"] < 0, "",
-                            np.where(c["lado"].to_numpy() == c["narr"].map(apoya).to_numpy(), "apoya", "rechaza"))
+    c = aplicar_posturas(c, lado_apoya(nucleo))
     log.info("narrativas: microgrupos=%d acompañamiento=%d textos_ruido=%d (k>=%d) ruido_micro=%d narrativas=%d",
              n_micro, len(acomp), len(ruido_txt), k_min, int(ruido.sum()), c.loc[c["narr"] >= 0, "narr"].nunique())
     return c
 
 
-def describir(c: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+def aplicar_posturas(c: pd.DataFrame, apoya: dict[int, int]) -> pd.DataFrame:
+    """postura = 'apoya' si el lado del comentario es el lado que afirma de su narrativa; '' si es ruido."""
+    lado_ok = c["lado"].to_numpy() == c["narr"].map(apoya).to_numpy()
+    c["postura"] = np.where(c["narr"] < 0, "", np.where(lado_ok, "apoya", "rechaza"))
+    return c
+
+
+def ejemplos_por_lado(c: pd.DataFrame, n: int) -> dict[int, tuple[list[str], list[str]]]:
+    """Por narrativa, los textos propios (no respuestas, no heredados) más frecuentes de cada lado, determinísticos."""
+    base = c[(c["narr"] >= 0) & ~c["heredado"] & c["respuesta_a"].isna()]
+    out = {}
+    for narr, g in base.groupby("narr"):
+        lados = []
+        for lado in (0, 1):
+            t = g.loc[g["lado"] == lado, "texto"].map(limpiar_titulo)
+            t = t[t.str.split().str.len() >= 4]
+            lados.append(t.value_counts().sort_index(kind="stable").sort_values(ascending=False, kind="stable")
+                         .index[:n].tolist())
+        out[int(narr)] = (lados[0], lados[1])
+    return out
+
+
+def consultar_profesor(c: pd.DataFrame, profesor, cfg: dict) -> tuple[dict[int, int], dict[int, str]]:
+    """Lado que afirma y título según el LLM, solo donde responde con confianza suficiente."""
+    lados, titulos = {}, {}
+    for narr, (a, b) in ejemplos_por_lado(c, cfg["ejemplos_por_lado"]).items():
+        if not a or not b:
+            continue
+        j = profesor.juzgar_narrativa(a, b)
+        if j and j["confianza"] >= cfg["min_confianza"]:
+            lados[narr] = 0 if j["lado_que_afirma"] == "A" else 1
+            titulos[narr] = j["afirmacion"].strip()
+    return lados, titulos
+
+
+def describir(c: pd.DataFrame, cfg: dict, titulos: dict[int, str] | None = None) -> pd.DataFrame:
+    titulos = titulos or {}
     filas, docs = [], {}
     for n, g in c[c["narr"] >= 0].groupby("narr"):
         etiqueta = f"n{int(n):02d}"
         nucleo = g[~g["heredado"]]
         origen = origen_robusto(nucleo["ts"] if len(nucleo) else g["ts"], cfg["origen_ventana_h"], cfg["origen_minimo"])
         filas.append({"narrativa": etiqueta,
-                      "titulo": titulo_representativo(nucleo.loc[(nucleo["postura"] == "apoya") & nucleo["respuesta_a"].isna(), "texto"]),
+                      "titulo": titulos.get(int(n)) or titulo_representativo(
+                          nucleo.loc[(nucleo["postura"] == "apoya") & nucleo["respuesta_a"].isna(), "texto"]),
                       "fecha_origen": origen.tz_convert(TZ),
                       "apoya": int((g["postura"] == "apoya").sum()), "rechaza": int((g["postura"] == "rechaza").sum()),
                       "total": len(g)})
@@ -136,11 +172,17 @@ def run(interim: Path, config: dict) -> dict:
     X, info_emb = emb.embeber(unicos["texto_hash"].tolist(), unicos["texto_norm"].tolist())
 
     c = asignar(c, X, unicos["texto_hash"].tolist(), cfg, seed=config["seed"])
-    meta = describir(c, cfg)
+    profesor = Profesor.desde_config(config["llm"])
+    lados_llm, titulos = consultar_profesor(c, profesor, config["llm"])
+    if lados_llm:
+        local = lado_apoya(c[(c["narr"] >= 0) & ~c["heredado"]].assign(es_respuesta=lambda d: d["respuesta_a"].notna()))
+        c = aplicar_posturas(c, {**local, **lados_llm})
+    meta = describir(c, cfg, titulos)
     c["narrativa"] = np.where(c["narr"] >= 0, c["narr"].map(lambda n: f"n{int(n):02d}" if n >= 0 else ""), "")
     c[["comentario_id", "narrativa", "postura", "micro", "heredado"]].to_parquet(interim / "narrativas_asig.parquet")
     meta.to_parquet(interim / "narrativas_meta.parquet")
     info = {"narrativas": len(meta), "ruido": int((c["narrativa"] == "").sum()), "embeddings": info_emb,
+            "llm": {**profesor.uso, "modelo": profesor.modelo, "juicios": len(lados_llm)},
             "segundos": round(time.perf_counter() - t0, 1)}
     log.info("narrativas: %s", info)
     return info

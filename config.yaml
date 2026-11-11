@@ -33,12 +33,18 @@ coordinacion:
   fraccion_nucleo: 0.5                      # E30: rescate del núcleo k-core si la comunidad no es densa
 
 llm:
-  proveedor: null                           # null = tomar de LLM_PROVIDER (.env); sin clave => respaldo
-  temperatura: 0
-  max_concurrencia: 16
-  timeout_s: 30
-  reintentos: 4
-  cache_dir: cache/llm                      # se commitea: permite re-correr sin clave
+  # Profesor opcional (radar/llm.py): 1 llamada por narrativa para decidir qué lado afirma + título.
+  # Sin ANTHROPIC_API_KEY usa cache/llm/ (commiteada) y, si no hay, reglas locales. LLM_MODEL en .env lo sobreescribe.
+  modelo: claude-opus-5-5
+  precios_usd_por_millon:                   # para costo.json
+    claude-opus-5-5: {in: 4.0, out: 20.0}
+    claude-sonnet-5-5: {in: 2.0, out: 10.0}
+    claude-haiku-5-5: {in: 0.10, out: 0.50}
+  ejemplos_por_lado: 8
+  min_confianza: 0.6
+  timeout_s: 60
+  reintentos: 3
+  cache_dir: cache/llm
 
 duckdb:
   memory_limit: 4GB
