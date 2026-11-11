@@ -1,26 +1,36 @@
 # Todos los parámetros acá. Nada de números mágicos en el código.
-# Regla: umbrales RELATIVOS (percentiles, z-scores), nunca atados a los temas de práctica.
+# Regla: nada atado a los temas de práctica. Cada valor indica el experimento que lo justifica (experimentos/).
 
 seed: 42
 interim_dir: interim
 tz: "-03:00"
 
 embeddings:
-  modelo: intfloat/multilingual-e5-small   # candidato B: EmbeddingGemma 2 (se decide en Fase 0)
+  modelo: intfloat/multilingual-e5-small   # E01/E02: misma pureza kNN que EmbeddingGemma 2 (0,998) y 6x más rápido
   batch: 256
   dispositivo: auto                         # auto | cpu | mps
+  cache_dir: interim/cache_emb
 
 narrativas:
-  respuesta_corta_max_chars: 30             # respuestas "sin contenido" que heredan del padre
+  knn_k: 10
+  resolucion: 2.0                           # E06: barrido 0.5–4; 2.0 mejor equilibrio ruido/postura
+  acomp_min_dispersion: 5                   # respuesta corta que cuelga de >= 5 microgrupos = acompañamiento
+  acomp_max_palabras: 4
+  umbral_ruido: 0.01                        # respuestas por comentario del microgrupo (E04/E06)
+  ruido_alfa: 0.02                          # E18: texto frecuente sin respuestas => ruido (umbral adaptativo)
   herencia_profundidad_max: 10
-  muestra_llm_postura: 3000
+  origen_ventana_h: 3                       # tolerancia del puntaje = 3 h
+  origen_minimo: 5
 
 coordinacion:
-  ventana_min: 15                           # co-ocurrencia en la misma publicación
-  min_coincidencias: 3                      # repetición mínima entre pares de cuentas
+  ventana_min: 30                           # E17: ráfaga alineada (misma publicación + narrativa + postura)
+  min_sincronias: 3                         # "las mismas cuentas juntas, una y otra vez"
+  min_sincronia_norm: 0.2                   # fracción de publicaciones de la cuenta menos activa
+  min_tamano: 5
+  min_densidad: 0.3
 
 llm:
-  proveedor: null                           # null = tomar de la variable LLM_PROVIDER (.env)
+  proveedor: null                           # null = tomar de LLM_PROVIDER (.env); sin clave => respaldo
   temperatura: 0
   max_concurrencia: 16
   timeout_s: 30

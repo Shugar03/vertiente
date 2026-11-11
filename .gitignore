@@ -13,3 +13,7 @@ __pycache__/
 .env
 *.pem
 # OJO: entrega/ y cache/llm/ SÍ se commitean
+
+# temporales de DuckDB (spill a disco)
+.tmp/
+*.tmp

@@ -1,0 +1,2 @@
+google/embeddinggemma-2 {'modelo': 'google/embeddinggemma-2', 'nuevos': 62421, 'en_cache': 0, 'segundos': 342.4, 'dims': 768} pureza_narrativa=0.998 pureza_narr_postura=0.996
+google/embeddinggemma-2 mps batch=64: 263 textos/s
