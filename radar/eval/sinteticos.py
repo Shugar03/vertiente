@@ -62,7 +62,7 @@ def main() -> None:
     ap.add_argument("--sets", nargs="*")
     ap.add_argument("--config", type=Path, default=Path("config.yaml"))
     a = ap.parse_args()
-    cfg = yaml.safe_load(a.config.read_text())
+    cfg = yaml.safe_load(a.config.read_text(encoding="utf-8"))
     sets = a.sets or sorted(p.name for p in BASE.iterdir() if (p / "verdad").is_dir())
     pd.set_option("display.width", 200)
     for nombre in sets:

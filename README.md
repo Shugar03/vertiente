@@ -21,15 +21,40 @@ make run                        # pipeline completo sobre datos/practica -> sali
 make check                      # valida el formato de la entrega
 make score                      # puntaje (réplica del oficial)   |   make score-oficial: el script del desafío
 make demo                       # dashboard -> salida/practica/dashboard.html
-make test                       # 76 tests, cobertura 93% (pipeline de producción ≈ 98%)
+make app                        # carga amigable: arrastrar CSV al navegador -> dashboard
+make test                       # 84 tests (incluye punta a punta)
 make validar                    # robustez: variantes ensuciadas, submuestreadas, sin un tema, otras semillas
 ```
+
+**Cargar otros comentarios sin línea de comandos:** `make app` (o `python -m radar.app`) abre una página local donde
+se arrastran los CSV. Solo `comentarios.csv(.gz)` es obligatorio (`cuentas` suma la antigüedad de las cuentas); corre
+el mismo pipeline, muestra el progreso por etapa y al terminar abre el dashboard y ofrece descargar la entrega. Todo
+queda en la máquina (escucha solo en `127.0.0.1`); cada carga va a `datos/subidos/` y `salida/carga-…/`.
+
+### Windows
+
+Probado en Windows 11 (CPU, sin GPU). Sin `make`, los mismos comandos con Python directo:
+
+```
+python -m radar.app                                                   # carga por arrastre (lo más simple)
+python -m radar run --datos datos/practica --salida salida/practica   # = make run
+python scripts/check_entrega.py --datos datos/practica --entrega salida/practica
+python -m radar.demo --interim interim/practica --salida salida/practica/dashboard.html
+```
+
+Instalación si `uv sync` falla: crear el entorno en una **ruta corta** (torch supera el límite de 260 caracteres de
+Windows en carpetas profundas) e instalar las versiones exactas del lock con pip:
+`uv export --frozen --no-hashes --no-emit-project > req.txt` y `.venv\Scripts\python -m pip install -r req.txt`.
+Si uv da `invalid peer certificate` (antivirus o proxy que inspecciona HTTPS), agregar `--native-tls`.
+La primera corrida baja el modelo (~500 MB) y calcula los embeddings: tarda varios minutos en CPU; después quedan en
+caché.
 
 **Set final (viernes):** copiar los CSV a `datos/final/` y correr **un solo comando**:
 
 ```bash
 make entrega                    # = run + check sobre datos/final -> entrega/ (se commitea)
-make final                      # todo el viernes: espera el set, corre, valida, dashboard + video, commit y push
+make final                      # todo el viernes (desde main): espera el set, corre, valida, dashboard + video,
+                                #   commit, push a main y repo público (PUBLICAR=0 lo saltea)
 make publicar                   # repo público (requisito excluyente al cierre)
 ```
 
@@ -107,8 +132,8 @@ radar/                 código
   narrativas/          grafo, postura, respuestas, origen, descripción
   coordinacion/        señales SQL y detección de grupos
   eval/                réplica del puntaje y validación de robustez
-  llm.py · embed.py · texto.py · demo.py · cli.py
-tests/                 76 tests (unidades con casos borde + etapas de punta a punta), cobertura 93%
+  llm.py · embed.py · texto.py · demo.py · app.py (carga por arrastre) · cli.py
+tests/                 84 tests (unidades con casos borde + etapas de punta a punta + app de carga)
 experimentos/          E01–E37: hipótesis, medición y decisión
 docs/                  PLAN · EVALUACION · VALIDACION · SINTETICOS · TAREAS · ROADMAP · PITCH
 sinteticos/            generadores de sets sintéticos de prueba

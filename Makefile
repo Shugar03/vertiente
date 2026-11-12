@@ -3,7 +3,7 @@ SALIDA  ?= salida/$(notdir $(DATOS))
 DESAFIO := https://github.com/qualydata-org/desafio-qualydata.git
 MODELO  := intfloat/multilingual-e5-small
 
-.PHONY: setup datos modelos run score score-oficial check entrega test validar demo limpiar final publicar
+.PHONY: setup datos modelos run score score-oficial check entrega test validar demo app limpiar final publicar
 
 setup: datos
 	uv sync
@@ -46,6 +46,10 @@ validar:
 # Dashboard estático a partir de la última corrida.
 demo:
 	uv run python -m radar.demo --interim interim/$(notdir $(DATOS)) --salida $(SALIDA)/dashboard.html
+
+# Carga amigable: arrastrar los CSV al navegador -> pipeline -> dashboard (http://127.0.0.1:8765).
+app:
+	uv run python -m radar.app
 
 limpiar:
 	rm -rf interim/*/duckdb_tmp salida
