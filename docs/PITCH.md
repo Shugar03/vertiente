@@ -40,7 +40,7 @@ día 6 llega a los ~20 s).
 > *(día 6: aparecen juntas las dos alertas → click en ■ para pausar)* "… y acá está. Domingo, una y doce: la
 > narrativa nueva y, en el mismo minuto, la operación que la empuja. **Esto es lo que les conté al principio.**"
 > *(scroll a "Quién lo empuja")* "Veinticuatro cuentas, creadas el día anterior, activas de madrugada. Y no es la
-> única: hay otra de sesenta cuentas a favor del proyecto minero, y otra de cuarenta en contra. Radar no toma partido:
+> única: hay otra de sesenta cuentas a favor del proyecto minero, y otra de cuentas con años de antigüedad en contra. Radar no toma partido:
 > encuentra lo armado de los dos lados."
 
 **Plan B** si algo falla en vivo: abrir `docs/video/02_dia6.png` y `03_final.png`, o reproducir `docs/demo_practica.mp4`.
@@ -77,7 +77,7 @@ día 6 llega a los ~20 s).
 | Rumor | n12 «Ya van a cortar la cinta en campaña aunque no haya ni camas» — narrativa emergente |
 | Cuándo | domingo 06-09, 01:12 (día 6 de 14) |
 | Operación | op03: 24 cuentas creadas el día anterior, actividad de madrugada |
-| Otras operaciones | op01: 60 cuentas (antigüedad mediana 4 días) a favor del proyecto · op02: 40 cuentas en contra |
+| Otras operaciones | op01: 60 cuentas (antigüedad mediana 4 días) a favor del proyecto · op02: 30–40 cuentas antiguas (3,4 años de mediana) en contra; la cifra varía según la máquina, por eso el guion no la dice |
 | Totales | 200.000 comentarios · 13 narrativas · 3 operaciones · 124 cuentas · 15,7 s · 53,62/55 |
 
 Si se presenta el dashboard del **set final**, rehacer el hook con la alerta más llamativa de ese día manteniendo la

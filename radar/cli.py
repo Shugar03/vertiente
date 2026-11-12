@@ -28,7 +28,7 @@ def run(datos: Path, salida: Path, config: dict) -> dict:
     etapas["coordinacion"] = coordinacion.run(interim, config)
     uso_llm = etapas["narrativas"].get("llm", {"tokens": 0, "usd": 0.0})
     etapas["costo"] = entrega.run(interim, salida, config, segundos=time.perf_counter() - t0, uso_llm=uso_llm)
-    (interim / "reporte.json").write_text(json.dumps(etapas, ensure_ascii=False, indent=2, default=str))
+    (interim / "reporte.json").write_text(json.dumps(etapas, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
     log.info("listo en %.1fs -> %s", time.perf_counter() - t0, salida)
     return etapas
 
@@ -63,7 +63,7 @@ def main() -> None:
     a = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
     if a.cmd == "run":
-        run(a.datos, a.salida, yaml.safe_load(a.config.read_text()))
+        run(a.datos, a.salida, yaml.safe_load(a.config.read_text(encoding="utf-8")))
     else:
         score(a.verdad, a.entrega)
 

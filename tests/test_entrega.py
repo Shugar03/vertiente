@@ -34,7 +34,7 @@ def test_escribe_los_cuatro_archivos_validos(interim, tmp_path):
     nar = pd.read_csv(out / "narrativas.csv", dtype=str, keep_default_na=False)
     assert nar["fecha_origen"].item() == "2026-09-01T07:00:00-03:00"
     assert not (out / "comentarios.csv").read_bytes().startswith(b"\xef\xbb\xbf")
-    costo = json.loads((out / "costo.json").read_text())
+    costo = json.loads((out / "costo.json").read_text(encoding="utf-8"))
     assert costo["comentarios_procesados"] == 3 and costo["tokens_ia"] == 1000
     assert costo["usd_por_mil_comentarios"] == pytest.approx(0.01 / 3 * 1000, rel=1e-3)
     assert {"segundos", "hardware", "almacenamiento", "notas", "usd_ia"} <= set(costo)
