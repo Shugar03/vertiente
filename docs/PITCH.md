@@ -32,7 +32,7 @@ Ritmo: ~140 palabras por minuto, sin apuro. Las pausas marcadas (…) son parte 
 
 ### 1:05 — Demo (55 s)
 **Pantalla:** `dashboard.html` arriba de todo → click en **▶ Reproducir en vivo** (el período entero dura ~60 s; el
-día 6 llega a los ~25 s).
+día 6 llega a los ~20 s).
 
 > "Esto es Radar sobre el set de práctica. Arriba de cada narrativa, los que apoyan; abajo, los que rechazan. Trece
 > narrativas, encontradas solas."
