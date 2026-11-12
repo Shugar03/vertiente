@@ -14,11 +14,12 @@ Medimos todo con la réplica del puntaje oficial (`make score`). Línea base ofi
 
 Todo automatizado y ensayado (con un set final simulado) en `scripts/entrega_final.sh`:
 
-1. [ ] Desde temprano: `make final` — espera a que se publique el set final (revisa el repo del desafío cada 5 min;
+1. [ ] Desde temprano, **parados en `main`** (si no, el script se corta: el jurado clona `main`): `make final` — espera a que se publique el set final (revisa el repo del desafío cada 5 min;
        o copiá los CSV a `datos/final/`), y entonces corre, valida, testea, genera `demo/dashboard.html` y
        `demo/demo.mp4`, commitea `entrega/` y hace push.
 2. [ ] (Opcional, antes) `.env` con `ANTHROPIC_API_KEY` para que el profesor decida bandos y títulos.
-3. [ ] **Repo público** antes del cierre: `make publicar` (o `PUBLICAR=1 make final` hace todo junto).
+3. [ ] **Repo público** antes del cierre: `make final` lo publica y verifica al terminar (`PUBLICAR=0` lo saltea;
+       a mano: `make publicar`). Necesita `gh` autenticado. Si fallan tests, avisa pero la entrega se sube igual.
 4. [ ] Cargar en Hacki el link al repo + `demo/demo.mp4` (o `docs/demo_practica.mp4`). Pitch: `docs/PITCH.md`.
 
 ## Reglas de juego

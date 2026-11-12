@@ -29,7 +29,8 @@ make validar                    # robustez: variantes ensuciadas, submuestreadas
 
 ```bash
 make entrega                    # = run + check sobre datos/final -> entrega/ (se commitea)
-make final                      # todo el viernes: espera el set, corre, valida, dashboard + video, commit y push
+make final                      # todo el viernes (desde main): espera el set, corre, valida, dashboard + video,
+                                #   commit, push a main y repo público (PUBLICAR=0 lo saltea)
 make publicar                   # repo público (requisito excluyente al cierre)
 ```
 
