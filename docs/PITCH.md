@@ -2,11 +2,22 @@
 
 ## Guion
 
-**0:00 — El problema (20 s).**
-"Cuando miles de personas discuten un tema, hay dos preguntas: ¿qué se dice? y ¿qué parte está armada? Hacerlo
-comentario por comentario con IA es lento y caro; con palabras clave, falla."
+**0:00 — Hook (15 s).** Pantalla negra o el dashboard congelado en el día 6. Pausa antes de "¿Casualidad?".
+"Domingo, una y doce de la mañana. Aparece un rumor nuevo: *'van a cortar la cinta del hospital en campaña, aunque
+no haya ni camas'*. En ese mismo minuto, veinticuatro cuentas creadas el día anterior empiezan a empujarlo.
+¿Casualidad? … Nadie lo vio. Radar sí."
 
-**0:20 — La idea (40 s).**
+**0:15 — El problema (10 s).**
+"Entre doscientos mil comentarios, ¿qué se dice y qué parte está armada? Leerlos con IA uno por uno es lento y
+caro; con palabras clave, falla."
+
+> Hooks alternativos (mismos datos, otro tono):
+> - **Pregunta al jurado:** "¿Cuántos de los comentarios que leyeron hoy los escribió una persona de verdad? Nosotros
+>   lo podemos medir."
+> - **Número:** "Ciento veinticuatro cuentas. Tres operaciones. Escondidas entre doscientos mil comentarios.
+>   Las encontramos en quince segundos, sin gastar un peso en IA."
+
+**0:25 — La idea (35 s).**
 "Nuestra intuición: **la conversación misma es la etiqueta.** Cuando alguien responde con un argumento, discute la
 *misma* narrativa desde el *otro* lado. Conectando las respuestas, cada narrativa aparece sola con sus dos bandos.
 Y una operación coordinada no se ve en un comentario: se ve en la **repetición** — las mismas cuentas, en la misma
@@ -14,10 +25,15 @@ publicación, empujando lo mismo, una y otra vez."
 
 **1:00 — Demo (60 s).** Abrir `dashboard.html` → **▶ Reproducir en vivo**.
 - Las 13 narrativas aparecen con apoya (arriba) y rechaza (abajo).
-- Día 6, 01:12: alerta **narrativa emergente** «el hospital se inaugura para la foto» y al mismo tiempo
-  **operación op03**: 24 cuentas creadas el día anterior, 100% de madrugada.
-- op02: 30 cuentas *antiguas*, textos variados — la más difícil — empujando «no hubo consulta previa».
+- Domingo 06-09, 01:12 (día 6): alerta **narrativa emergente** n12 «Ya van a cortar la cinta en campaña aunque no
+  haya ni camas» y, en el mismo minuto, **operación op03**: 24 cuentas creadas el día anterior empujándola de
+  madrugada. *Es el hook del principio: cerrar el círculo ("esto es lo que les conté").*
+- op01: 60 cuentas (antigüedad mediana 4 días) empujan «Gracias al proyecto hay trabajo para los proveedores locales».
+- op02: 40 cuentas empujan «Sin consulta libre e informada no hay licencia social».
 - "En un minuto: qué circula, desde cuándo y quién lo empuja."
+
+*(Cifras de la corrida sobre práctica, capturas en `docs/video/`. Si se presenta el dashboard del set final, cambiar
+los ejemplos por los que muestre ese día.)*
 
 **2:00 — Números (40 s).**
 - 200.000 comentarios en **15 segundos**, en una notebook, **USD 0** de IA.
@@ -27,7 +43,7 @@ publicación, empujando lo mismo, una y otra vez."
 - Un comando: `make entrega`. DuckDB + Parquet hoy; ClickHouse + stream para millones por día, mismo SQL.
 
 **2:40 — Cierre (20 s).**
-"31 hipótesis medidas, la mitad refutadas y documentadas. No ajustamos a mano: elegimos cada parámetro por el peor
+"37 hipótesis medidas, muchas refutadas y documentadas. No ajustamos a mano: elegimos cada parámetro por el peor
 caso, porque el set final es otro. Radar: narrativas y coordinación a escala, explicables y baratas."
 
 ## Video (≤ 3 min, para Hacki)
