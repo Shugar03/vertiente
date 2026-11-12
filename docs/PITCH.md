@@ -1,50 +1,87 @@
 # Pitch (3 min) y video
 
+Hilo conductor: **un caso real** (el rumor del hospital, día 6) abre el pitch, se *ve* en vivo en la demo y vuelve en
+el cierre. Todo lo demás (la idea, los números) explica cómo Radar lo encontró.
+
+Ritmo: ~140 palabras por minuto, sin apuro. Las pausas marcadas (…) son parte del guion.
+
 ## Guion
 
-**0:00 — Hook (15 s).** Pantalla negra o el dashboard congelado en el día 6. Pausa antes de "¿Casualidad?".
-"Domingo, una y doce de la mañana. Aparece un rumor nuevo: *'van a cortar la cinta del hospital en campaña, aunque
-no haya ni camas'*. En ese mismo minuto, veinticuatro cuentas creadas el día anterior empiezan a empujarlo.
-¿Casualidad? … Nadie lo vio. Radar sí."
+### 0:00 — Hook (15 s)
+**Pantalla:** negra, o el dashboard congelado en el día 6 (`dashboard.html#t=20`). Sin decir el nombre del equipo todavía.
 
-**0:15 — El problema (10 s).**
-"Entre doscientos mil comentarios, ¿qué se dice y qué parte está armada? Leerlos con IA uno por uno es lento y
-caro; con palabras clave, falla."
+> "Domingo, una y doce de la mañana. Aparece un rumor nuevo: *'van a cortar la cinta del hospital en campaña, aunque
+> no haya ni camas'*. En ese mismo minuto, veinticuatro cuentas creadas el día anterior empiezan a empujarlo.
+> … ¿Casualidad? … Nadie lo vio. Radar sí."
 
-> Hooks alternativos (mismos datos, otro tono):
-> - **Pregunta al jurado:** "¿Cuántos de los comentarios que leyeron hoy los escribió una persona de verdad? Nosotros
->   lo podemos medir."
-> - **Número:** "Ciento veinticuatro cuentas. Tres operaciones. Escondidas entre doscientos mil comentarios.
->   Las encontramos en quince segundos, sin gastar un peso en IA."
+### 0:15 — El problema (15 s)
+**Pantalla:** placa "200.000 comentarios".
 
-**0:25 — La idea (35 s).**
-"Nuestra intuición: **la conversación misma es la etiqueta.** Cuando alguien responde con un argumento, discute la
-*misma* narrativa desde el *otro* lado. Conectando las respuestas, cada narrativa aparece sola con sus dos bandos.
-Y una operación coordinada no se ve en un comentario: se ve en la **repetición** — las mismas cuentas, en la misma
-publicación, empujando lo mismo, una y otra vez."
+> "Somos Radar. Ese rumor estaba escondido entre doscientos mil comentarios. Leerlos uno por uno con IA es lento y
+> caro; buscar palabras clave no sirve, porque cada tema es distinto. Y una operación no se ve en un comentario
+> suelto."
 
-**1:00 — Demo (60 s).** Abrir `dashboard.html` → **▶ Reproducir en vivo**.
-- Las 13 narrativas aparecen con apoya (arriba) y rechaza (abajo).
-- Domingo 06-09, 01:12 (día 6): alerta **narrativa emergente** n12 «Ya van a cortar la cinta en campaña aunque no
-  haya ni camas» y, en el mismo minuto, **operación op03**: 24 cuentas creadas el día anterior empujándola de
-  madrugada. *Es el hook del principio: cerrar el círculo ("esto es lo que les conté").*
-- op01: 60 cuentas (antigüedad mediana 4 días) empujan «Gracias al proyecto hay trabajo para los proveedores locales».
-- op02: 40 cuentas empujan «Sin consulta libre e informada no hay licencia social».
-- "En un minuto: qué circula, desde cuándo y quién lo empuja."
+### 0:30 — Cómo lo encontramos (35 s)
+**Pantalla:** diagrama de *Cómo funciona* del README.
 
-*(Cifras de la corrida sobre práctica, capturas en `docs/video/`. Si se presenta el dashboard del set final, cambiar
-los ejemplos por los que muestre ese día.)*
+> "Usamos dos ideas. La primera: **la conversación misma es la etiqueta.** Cuando alguien le responde a otro con un
+> argumento, está discutiendo la misma narrativa desde el otro lado. Uniendo las respuestas, cada narrativa aparece
+> sola, con sus dos bandos, sin que nadie etiquete nada.
+> La segunda: **una operación se delata por la repetición.** No alcanza con coincidir una vez; lo sospechoso es ver
+> a las mismas cuentas, en la misma publicación, empujando lo mismo, a minutos de distancia, una y otra vez."
 
-**2:00 — Números (40 s).**
-- 200.000 comentarios en **15 segundos**, en una notebook, **USD 0** de IA.
-- **53,6 / 55** en la parte automática de práctica (línea base: 17).
-- Robusto: datos ensuciados, 75% de los datos, otras semillas → mismo resultado (VALIDACION.md).
-- Agnóstico: sobre 2 temas y 8 narrativas inventadas que nunca vio, 29,7/30 en narrativas (SINTETICOS.md).
-- Un comando: `make entrega`. DuckDB + Parquet hoy; ClickHouse + stream para millones por día, mismo SQL.
+### 1:05 — Demo (55 s)
+**Pantalla:** `dashboard.html` arriba de todo → click en **▶ Reproducir en vivo** (el período entero dura ~60 s; el
+día 6 llega a los ~25 s).
 
-**2:40 — Cierre (20 s).**
-"37 hipótesis medidas, muchas refutadas y documentadas. No ajustamos a mano: elegimos cada parámetro por el peor
-caso, porque el set final es otro. Radar: narrativas y coordinación a escala, explicables y baratas."
+> "Esto es Radar sobre el set de práctica. Arriba de cada narrativa, los que apoyan; abajo, los que rechazan. Trece
+> narrativas, encontradas solas."
+> *(mientras corre)* "Reproducimos los catorce días…"
+> *(día 6: aparecen juntas las dos alertas → click en ■ para pausar)* "… y acá está. Domingo, una y doce: la
+> narrativa nueva y, en el mismo minuto, la operación que la empuja. **Esto es lo que les conté al principio.**"
+> *(scroll a "Quién lo empuja")* "Veinticuatro cuentas, creadas el día anterior, activas de madrugada. Y no es la
+> única: hay otra de sesenta cuentas a favor del proyecto minero, y otra de cuarenta en contra. Radar no toma partido:
+> encuentra lo armado de los dos lados."
+
+**Plan B** si algo falla en vivo: abrir `docs/video/02_dia6.png` y `03_final.png`, o reproducir `docs/demo_practica.mp4`.
+
+### 2:00 — Por qué funciona (35 s)
+**Pantalla:** placa con los cuatro números.
+
+> "Todo esto corre con un solo comando, en una notebook común: **quince segundos** para doscientos mil comentarios,
+> sin GPU y con **cero pesos** de IA.
+> Con el puntaje oficial del desafío sacamos **cincuenta y tres coma seis sobre cincuenta y cinco**; la línea base es
+> diecisiete.
+> Y como el set final es otro, lo probamos con temas que nunca vio, con datos sucios y con menos volumen: sigue
+> funcionando. Para millones de comentarios por día, el mismo SQL pasa de DuckDB a ClickHouse."
+
+### 2:35 — Cierre (25 s)
+**Pantalla:** placa final: **Radar** · *Qué circula, desde cuándo y quién lo empuja* · link al repo · nombres.
+
+> "Medimos treinta y siete hipótesis y descartamos las que no funcionaban; no ajustamos nada a mano.
+> … La próxima vez que a la una de la mañana aparezca un rumor y veinticuatro cuentas salgan a empujarlo, alguien va
+> a saber quién está detrás.
+> Radar: qué circula, desde cuándo y quién lo empuja."
+
+### Versión de 30 s (pasillo, mentores, ascensor)
+
+> "Domingo, una y doce de la mañana: aparece un rumor sobre un hospital y, en el mismo minuto, veinticuatro cuentas
+> creadas el día anterior salen a empujarlo. Radar lo detecta solo, entre doscientos mil comentarios, en quince
+> segundos y sin gastar en IA. ¿Cómo? Las respuestas nos dicen qué narrativa discute cada uno y desde qué lado; y una
+> operación se delata porque las mismas cuentas empujan lo mismo, una y otra vez."
+
+### Datos del caso (para no equivocarse)
+
+| Qué | Valor (corrida sobre práctica, capturas en `docs/video/`) |
+|---|---|
+| Rumor | n12 «Ya van a cortar la cinta en campaña aunque no haya ni camas» — narrativa emergente |
+| Cuándo | domingo 06-09, 01:12 (día 6 de 14) |
+| Operación | op03: 24 cuentas creadas el día anterior, actividad de madrugada |
+| Otras operaciones | op01: 60 cuentas (antigüedad mediana 4 días) a favor del proyecto · op02: 40 cuentas en contra |
+| Totales | 200.000 comentarios · 13 narrativas · 3 operaciones · 124 cuentas · 15,7 s · 53,62/55 |
+
+Si se presenta el dashboard del **set final**, rehacer el hook con la alerta más llamativa de ese día manteniendo la
+estructura: hora exacta → frase textual → cuántas cuentas y qué tienen de raro → "¿Casualidad? Radar sí".
 
 ## Video (≤ 3 min, para Hacki)
 
@@ -69,3 +106,11 @@ Resumen:
 - **¿Escala?** Ver README → "Cómo escala".
 - **¿Qué no detecta?** Lo decimos: campañas de cuentas antiguas que rotan subgrupos, donde ningún par coincide dos
   veces (lo encontramos con sets sintéticos; probamos 4 soluciones y ninguna mejoraba sin dañar el resto).
+- **¿Cómo saben que esas 24 cuentas no son gente real que opina igual?** No juzgamos la opinión sino el
+  comportamiento: las mismas cuentas, en varias publicaciones distintas, empujando lo mismo a minutos de distancia, y
+  formando un grupo cerrado (triángulos). Gente que opina igual coincide una vez; una operación coincide siempre. Por
+  eso además mostramos el perfil (antigüedad, horario) para que una persona decida.
+- **¿No es censura / no toman partido?** En práctica detecta una operación a favor del proyecto (op01) y otra en
+  contra (op02). Radar no evalúa si una narrativa es verdadera: muestra qué circula y qué parte está empujada.
+- **Si lo re-corremos, ¿da lo mismo?** Sí en la misma máquina (semillas fijas, orden determinístico, E26). En otro
+  hardware (CPU vs Mac con `mps`) los embeddings cambian en decimales y puede variar algún detalle, no el resultado.
