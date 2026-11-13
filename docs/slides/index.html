@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vertiente · pitch</title>
+<style>
+:root {
+  --page: #f6f5f1; --surface: #ffffff; --surface-2: #f1f0ea; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e6e5de; --ring: rgba(11,11,11,0.09);
+  --apoya: #2a78d6; --rechaza: #eb6834; --critical: #d03b3b; --warning: #e9a30c; --ok: #1f8a5b;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #1b1b1a; overflow: hidden; }
+body { font: 22px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+.deck { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; transform-origin: 0 0; }
+.slide { position: absolute; inset: 0; background: var(--page); padding: 64px 80px 56px; display: none; flex-direction: column; overflow: hidden; }
+.slide.activa { display: flex; }
+.slide.oscura { background: #0d0d0d; color: #f0efec; --ink: #f0efec; --ink-2: #c3c2b7; --surface: #171716; --surface-2: #1f1f1e; --ring: rgba(255,255,255,.1); --grid: #2a2a28; }
+
+/* cabecera y pie de cada slide */
+.cab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+.marca { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; letter-spacing: -.01em; }
+.logo { width: 30px; height: 30px; border-radius: 8px; background: var(--ink); color: var(--page); display: grid; place-items: center; }
+.logo svg { width: 19px; height: 19px; }
+.crit { font-size: 14px; font-weight: 650; border-radius: 999px; padding: 5px 12px; background: var(--surface); border: 1px solid var(--ring); color: var(--ink-2); display: inline-flex; gap: 8px; align-items: center; }
+.crit b { color: var(--ink); }
+.crit::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--ink)); }
+.pie { margin-top: auto; display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; padding-top: 16px; }
+
+h1 { font-size: 60px; line-height: 1.05; letter-spacing: -.03em; margin: 0 0 18px; }
+h2 { font-size: 44px; line-height: 1.1; letter-spacing: -.025em; margin: 0 0 14px; }
+.sub { font-size: 24px; color: var(--ink-2); margin: 0 0 28px; max-width: 980px; }
+.k { font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 650; margin: 0 0 10px; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: 16px; padding: 22px 24px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.big { font-size: 56px; font-weight: 700; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.big small { font-size: 26px; color: var(--muted); font-weight: 600; }
+.lbl { color: var(--ink-2); font-size: 17px; margin-top: 8px; }
+.muted { color: var(--muted); }
+code { font: 600 .9em ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--surface-2); border-radius: 6px; padding: 1px 7px; }
+.cita { font-size: 38px; line-height: 1.25; letter-spacing: -.015em; font-weight: 600; max-width: 1040px; margin: 0; }
+.cita::before { content: "«"; color: var(--warning); } .cita::after { content: "»"; color: var(--warning); }
+.chip { display: inline-block; font-size: 14px; font-weight: 650; border-radius: 999px; padding: 3px 10px; }
+.chip.op { color: var(--critical); background: color-mix(in srgb, var(--critical) 14%, transparent); }
+.chip.em { color: #9a6a00; background: color-mix(in srgb, var(--warning) 20%, transparent); }
+.chip.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+
+/* barras de puntaje */
+.barra { margin: 12px 0; }
+.barra .t { display: flex; justify-content: space-between; font-size: 17px; margin-bottom: 6px; }
+.barra .t b { font-variant-numeric: tabular-nums; }
+.barra .b { height: 10px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.barra .b span { display: block; height: 100%; border-radius: 999px; background: var(--ink); }
+
+table { width: 100%; border-collapse: collapse; font-size: 18px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--grid); }
+th { color: var(--muted); font-weight: 650; font-size: 14px; text-transform: uppercase; letter-spacing: .05em; }
+td.n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; }
+
+/* flujo del pipeline */
+.flujo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; position: relative; }
+.paso { position: relative; }
+.paso .card { height: 100%; }
+.paso h3 { margin: 6px 0 8px; font-size: 22px; }
+.paso p { margin: 0; color: var(--ink-2); font-size: 16px; }
+.paso .num { font-size: 13px; font-weight: 700; color: var(--muted); }
+.paso:not(:last-child)::after { content: "→"; position: absolute; right: -14px; top: 40%; font-size: 22px; color: var(--muted); transform: translateX(50%); }
+
+.captura { border-radius: 14px; border: 1px solid var(--ring); box-shadow: 0 12px 40px rgba(0,0,0,.12); width: 100%; display: block; }
+.lista { margin: 0; padding: 0; list-style: none; }
+.lista li { padding: 10px 0 10px 30px; position: relative; font-size: 21px; }
+.lista li::before { content: ""; position: absolute; left: 4px; top: 20px; width: 10px; height: 10px; border-radius: 3px; background: var(--c, var(--ink)); }
+
+/* hilo de respuestas (idea 1) */
+.hilo .msg { border-radius: 14px; padding: 14px 18px; font-size: 19px; border: 1px solid var(--ring); background: var(--surface); position: relative; }
+.hilo .msg + .msg { margin: 14px 0 0 56px; }
+.hilo .msg + .msg::before { content: "↳"; position: absolute; left: -36px; top: 12px; color: var(--muted); font-size: 22px; }
+.hilo .msg.a { border-left: 5px solid var(--apoya); } .hilo .msg.r { border-left: 5px solid var(--rechaza); }
+.hilo .who { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+.hilo .a .who { color: var(--apoya); } .hilo .r .who { color: var(--rechaza); }
+
+/* matriz de sincronía (idea 2) */
+.matriz { display: grid; grid-template-columns: 120px repeat(6, 1fr); gap: 6px; font-size: 14px; align-items: center; }
+.matriz .h { color: var(--muted); font-weight: 650; text-align: center; }
+.matriz .c { height: 30px; border-radius: 6px; background: var(--surface-2); }
+.matriz .c.on { background: var(--critical); }
+.matriz .c.v { background: color-mix(in srgb, var(--apoya) 55%, transparent); }
+
+/* fondo: agua que fluye (idea del logo) */
+.slide > * { position: relative; z-index: 1; }
+.slide > svg.fondo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.onda { transform-box: fill-box; transform-origin: center; animation: onda 4.4s ease-in-out infinite; }
+@keyframes onda { 0%, 100% { transform: scale(.94); opacity: .55; } 50% { transform: scale(1.04); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .onda { animation: none; } }
+svg.ola { display: block; width: 280px; height: 18px; margin: -6px 0 22px; overflow: visible; }
+svg.ola path { fill: none; stroke: #3987e5; stroke-width: 3; stroke-linecap: round; }
+
+/* demo: panorama en vivo */
+.video-pano { margin: 20px 0 18px; border-radius: 16px; overflow: hidden; border: 1px solid var(--ring); box-shadow: 0 12px 40px rgba(0,0,0,.10); background: #fff; line-height: 0; }
+.video-pano video { width: 100%; display: block; }
+.reloj { display: inline-flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; background: var(--surface); border: 1px solid var(--ring); border-radius: 999px; padding: 8px 18px; white-space: nowrap; }
+.reloj .vivo { width: 10px; height: 10px; border-radius: 50%; background: var(--critical); }
+.reloj.corre .vivo { animation: latido 1s infinite; }
+@keyframes latido { 50% { opacity: .2; } }
+.eventos .ev { opacity: .22; transform: translateY(8px); transition: opacity .5s, transform .5s; padding: 18px 20px; }
+.eventos .ev.on { opacity: 1; transform: none; }
+.eventos .ev p { margin: 10px 0 0; font-size: 19px; }
+
+/* notas del orador */
+#notas { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(13,13,13,.94); color: #f0efec; font: 17px/1.5 system-ui, sans-serif; padding: 16px 28px 20px; display: none; z-index: 9; max-height: 40vh; overflow: auto; }
+#notas b { color: #f2b42c; font-weight: 650; }
+#prog { position: fixed; left: 0; bottom: 0; height: 3px; background: #f2b42c; z-index: 10; transition: width .2s; }
+#ayuda { position: fixed; right: 14px; top: 12px; color: #898781; font: 12px system-ui, sans-serif; z-index: 10; }
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { overflow: visible; height: auto; background: none; }
+  .deck { position: static; transform: none !important; width: 1280px; height: auto; }
+  .slide { position: relative; display: flex !important; width: 1280px; height: 720px; break-after: page; }
+  #notas, #prog, #ayuda { display: none !important; }
+  .eventos .ev { opacity: 1; transform: none; }
+  .onda { animation: none; }
+}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1 · Portada -->
+<section class="slide oscura" data-gota data-notas="Sin decir nada todavía: dejar la portada mientras el jurado se acomoda. Pasar enseguida al hook.">
+  <div class="cab"><span class="marca"><span class="logo" style="background:#f0efec;color:#0d0d0d">__LOGO__</span>Vertiente</span><span class="crit" style="--c:#f2b42c">Track <b>Datos y Streaming</b> · Desafío QualyData</span></div>
+  <div style="margin-top:110px">
+    <p class="k">Hackathon Argentina Space 2026 · Salta</p>
+    <h1 class="vertiente" style="font-size:96px">Vertiente</h1>
+    <p class="sub" style="font-size:30px">Qué circula, desde cuándo y quién lo empuja.<br>Narrativas y coordinación a escala, explicables y baratas.</p>
+  </div>
+  <div class="pie"><span>github.com/Shugar03/radar-narrativas</span><span>Sebastián Paz · Francisco Fernández · Antonio Chocobar</span></div>
+</section>
+
+<!-- 2 · Hook -->
+<section class="slide oscura" data-notas="<b>Hook (15 s).</b> «Domingo, una y doce de la mañana. Aparece un rumor nuevo: <i>van a cortar la cinta del hospital en campaña, aunque no haya ni camas</i>. En ese mismo minuto, veinticuatro cuentas creadas el día anterior empiezan a empujarlo. … ¿Casualidad? … Nadie lo vio. Vertiente sí.»">
+  <div class="cab"><span class="marca"><span class="logo" style="background:#f0efec;color:#0d0d0d">__LOGO__</span>Vertiente</span><span class="crit" style="--c:#e5534b">Un caso del set de práctica</span></div>
+  <p class="k" style="margin-top:40px">Domingo 06-09 · 01:12</p>
+  <p class="cita">Ya van a cortar la cinta en campaña aunque no haya ni camas.</p>
+  <div class="g3" style="margin-top:56px">
+    <div><div class="big" style="color:#f2b42c">01:12</div><div class="lbl">aparece un rumor nuevo<br><span class="chip em">Narrativa emergente</span></div></div>
+    <div><div class="big" style="color:#e5534b">24</div><div class="lbl">cuentas empiezan a empujarlo en el mismo minuto<br><span class="chip op">Operación op03</span></div></div>
+    <div><div class="big">1 <small>día</small></div><div class="lbl">de antigüedad tienen esas cuentas<br>activas 100% de madrugada</div></div>
+  </div>
+  <div class="pie"><span>¿Casualidad?</span><span>2</span></div>
+</section>
+
+<!-- 3 · Problema -->
+<section class="slide" data-notas="<b>El problema (15 s).</b> «Somos Vertiente. Ese rumor estaba escondido entre doscientos mil comentarios. Leerlos uno por uno con IA es lento y caro; buscar palabras clave no sirve, porque cada tema es distinto. Y una operación no se ve en un comentario suelto.»">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit">El problema</span></div>
+  <h2>El rumor estaba escondido entre <span style="color:var(--critical)">200.000</span> comentarios</h2>
+  <p class="sub">Dos preguntas: ¿qué narrativas circulan? y ¿qué parte es genuina y qué parte está armada?</p>
+  <div class="g3">
+    <div class="card"><p class="k">IA comentario por comentario</p><div style="font-size:26px;font-weight:650">Lenta y cara</div><p class="lbl">200.000 llamadas a un modelo por corrida, y aun así no ve la coordinación.</p></div>
+    <div class="card"><p class="k">Palabras clave</p><div style="font-size:26px;font-weight:650">No generalizan</div><p class="lbl">La gente dice lo mismo de mil maneras y el set final trae otros temas.</p></div>
+    <div class="card"><p class="k">Coordinación</p><div style="font-size:26px;font-weight:650">Es invisible de a uno</div><p class="lbl">Solo aparece mirando el conjunto: quién, dónde, cuándo y cuántas veces.</p></div>
+  </div>
+  <div class="g2" style="margin-top:20px">
+    <div class="card" style="border-left:5px solid var(--apoya)"><p class="k">Tarea A · Narrativas</p><p style="margin:0;font-size:20px">Descubrirlas sin lista previa, asignar cada comentario o marcarlo como ruido, decir si <b>apoya o rechaza</b> y cuándo nació.</p></div>
+    <div class="card" style="border-left:5px solid var(--critical)"><p class="k">Tarea B · Coordinación</p><p style="margin:0;font-size:20px">Detectar las cuentas que actúan coordinadas y <b>agruparlas por operación</b>, sin confundirlas con picos virales genuinos.</p></div>
+  </div>
+  <div class="pie"><span>Desafío QualyData · narrativas y coordinación a escala</span><span>3</span></div>
+</section>
+
+<!-- 4 · Idea 1 -->
+<section class="slide" data-notas="<b>Cómo lo encontramos, idea 1 (15 s).</b> «Usamos dos ideas. La primera: la conversación misma es la etiqueta. Cuando alguien le responde a otro con un argumento, está discutiendo la misma narrativa desde el otro lado. Uniendo las respuestas, cada narrativa aparece sola, con sus dos bandos, sin que nadie etiquete nada.»">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:var(--apoya)">Calidad de narrativas · <b>30 pts</b></span></div>
+  <p class="k">Idea 1</p>
+  <h2>La conversación misma es la etiqueta</h2>
+  <div class="g2" style="margin-top:18px;align-items:center">
+    <div class="hilo">
+      <div class="msg a"><div class="who">Apoya · n00 «El agua es para la gente, no para la mina»</div>Primero el agua de la población, después el litio.</div>
+      <div class="msg r"><div class="who">Rechaza · responde con un argumento</div>CHE, MENTIRA QUE LA MINA DEJA SIN AGUA AL PUEBLO, USAN AGUA SALADA QUE NO ES PARA CONSUMO.</div>
+      <div class="msg r" style="margin-left:112px"><div class="who">Rechaza · acompaña y hereda</div>100% de acuerdo</div>
+    </div>
+    <ul class="lista">
+      <li style="--c:var(--apoya)">Una respuesta <b>siempre</b> es de la misma narrativa: 28.054 de 28.054.</li>
+      <li style="--c:var(--rechaza)">El 80% discute desde la <b>postura opuesta</b>.</li>
+      <li style="--c:var(--muted)">Uniendo respuestas, las narrativas y sus dos bandos aparecen <b>solos</b>: sin lista previa ni etiquetado.</li>
+      <li style="--c:var(--ink)">Embeddings locales solo de textos únicos (200k → 62k).</li>
+    </ul>
+  </div>
+  <div class="pie"><span>Medido en E03–E06 (experimentos/)</span><span>4</span></div>
+</section>
+
+<!-- 5 · Idea 2 -->
+<section class="slide" data-notas="<b>Idea 2 (20 s).</b> «La segunda: una operación se delata por la repetición. No alcanza con coincidir una vez; lo sospechoso es ver a las mismas cuentas, en la misma publicación, empujando lo mismo, a minutos de distancia, una y otra vez.»">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:var(--critical)">Detección de coordinación · <b>25 pts</b></span></div>
+  <p class="k">Idea 2</p>
+  <h2>Una operación se delata por la repetición</h2>
+  <div class="g2" style="margin-top:18px;align-items:center">
+    <div class="card">
+      <div class="matriz">
+        <span></span><span class="h">pub 1</span><span class="h">pub 2</span><span class="h">pub 3</span><span class="h">pub 4</span><span class="h">pub 5</span><span class="h">pub 6</span>
+        <span class="muted">cuenta A</span><span class="c on"></span><span class="c"></span><span class="c on"></span><span class="c on"></span><span class="c"></span><span class="c on"></span>
+        <span class="muted">cuenta B</span><span class="c on"></span><span class="c"></span><span class="c on"></span><span class="c on"></span><span class="c"></span><span class="c on"></span>
+        <span class="muted">cuenta C</span><span class="c on"></span><span class="c"></span><span class="c on"></span><span class="c on"></span><span class="c"></span><span class="c on"></span>
+        <span class="muted">pico viral</span><span class="c"></span><span class="c v"></span><span class="c"></span><span class="c"></span><span class="c"></span><span class="c"></span>
+      </div>
+      <p class="lbl" style="margin-top:14px"><span class="chip op">Operación</span> las mismas cuentas, juntas, una y otra vez · <span class="chip" style="color:var(--apoya);background:color-mix(in srgb,var(--apoya) 14%,transparent)">Viral genuino</span> mucha gente, una sola vez</p>
+    </div>
+    <ul class="lista">
+      <li style="--c:var(--critical)">Sincronía <b>alineada</b>: misma publicación, misma narrativa y postura, a minutos.</li>
+      <li style="--c:var(--critical)">Repetida en <b>varias</b> publicaciones; el azar no forma triángulos.</li>
+      <li style="--c:var(--muted)">Picos virales y usuarios intensivos <b>no pasan</b> (hay un test que lo verifica).</li>
+      <li style="--c:var(--ink)">Todo en SQL: 3,3 M pares de cuentas en menos de 3 s.</li>
+    </ul>
+  </div>
+  <div class="pie"><span>Medido en E08–E30 (experimentos/)</span><span>5</span></div>
+</section>
+
+<!-- 6 · Demo -->
+<section class="slide" id="s-demo" data-notas="<b>Demo (55 s).</b> El panorama arranca solo al entrar. «Esto es Vertiente sobre el set de práctica: los catorce días, todas las narrativas. Arriba, los que apoyan; abajo, los que rechazan. Trece narrativas, encontradas solas.» <i>(mientras corre)</i> «Reproducimos los catorce días…» <i>(a los 8 s se pausa sola en el día 6 y se encienden las tarjetas)</i> «… y acá está. Domingo, una y doce: la narrativa nueva y, en el mismo minuto, la operación que la empuja. Esto es lo que les conté al principio. Veinticuatro cuentas, creadas el día anterior, activas de madrugada.» <i>(P para seguir)</i> «Y no es la única: hay otra de sesenta a favor del proyecto minero y otra de cuentas antiguas en contra. Vertiente no toma partido.» <b>Teclas:</b> P pausa/sigue · R reinicia. <b>Plan B:</b> docs/demo_practica.mp4 o el dashboard (dashboard.html#t=20).">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:var(--warning)">Claridad y visualización · <b>10 pts</b></span></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px">
+    <div><p class="k">Demo · el período en vivo</p><h2 style="font-size:38px;margin:0">Qué circula, desde cuándo y quién lo empuja</h2></div>
+    <div class="reloj" id="reloj"><span class="vivo"></span><span id="reloj-t">mar 01-09</span></div>
+  </div>
+  <div class="video-pano"><video id="pano" src="panorama.mp4" poster="panorama_dia6.png" muted playsinline preload="auto" aria-label="Panorama del período reproduciéndose"></video></div>
+  <div class="g3 eventos">
+    <div class="card ev" data-desde="20"><span class="chip em">Narrativa emergente · dom 06-09 01:12</span><p>«Ya van a cortar la cinta en campaña aunque no haya ni camas»</p></div>
+    <div class="card ev" data-desde="20"><span class="chip op">op03 · en el mismo minuto</span><p><b>24 cuentas</b> creadas el día anterior, activas 100% de madrugada, empujan el rumor.</p></div>
+    <div class="card ev" data-desde="55"><span class="chip ok">No toma partido</span><p><b>op01</b>: ~60 cuentas a favor del proyecto · <b>op02</b>: cuentas antiguas en contra.</p></div>
+  </div>
+  <div class="pie"><span>Grabado del dashboard real · bloques de 6 h · P pausa · R reinicia</span><span>6</span></div>
+</section>
+
+<!-- 7 · Puntaje automático -->
+<section class="slide" data-notas="<b>Por qué funciona (2:00).</b> «Con el puntaje oficial del desafío sacamos cincuenta y tres coma seis sobre cincuenta y cinco; la línea base es diecisiete.»">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:var(--apoya)">Narrativas <b>30</b> + Coordinación <b>25</b> · automático</span></div>
+  <div style="display:grid;grid-template-columns:360px 1fr;gap:40px;align-items:center;margin-top:10px">
+    <div>
+      <p class="k">Set de práctica · script oficial</p>
+      <div class="big" style="font-size:110px">53,6<small> / 55</small></div>
+      <p class="lbl" style="font-size:20px">Línea base oficial del desafío: <b>≈ 17</b></p>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <p class="k">Narrativas · 29,70 / 30</p>
+        <div class="barra"><div class="t"><span>Agrupamiento (B-cubed)</span><b>0,991</b></div><div class="b"><span style="width:99.1%;background:var(--apoya)"></span></div></div>
+        <div class="barra"><div class="t"><span>Ruido (F1)</span><b>0,970</b></div><div class="b"><span style="width:97%;background:var(--apoya)"></span></div></div>
+        <div class="barra"><div class="t"><span>Postura (macro-F1)</span><b>0,995</b></div><div class="b"><span style="width:99.5%;background:var(--apoya)"></span></div></div>
+        <div class="barra"><div class="t"><span>Origen emergentes</span><b>1,000</b></div><div class="b"><span style="width:100%;background:var(--apoya)"></span></div></div>
+      </div>
+      <div class="card">
+        <p class="k">Coordinación · 23,92 / 25</p>
+        <div class="barra"><div class="t"><span>Precisión cuentas</span><b>0,911</b></div><div class="b"><span style="width:91.1%;background:var(--critical)"></span></div></div>
+        <div class="barra"><div class="t"><span>Recall cuentas</span><b>0,983</b></div><div class="b"><span style="width:98.3%;background:var(--critical)"></span></div></div>
+        <div class="barra"><div class="t"><span>F1 cuentas</span><b>0,946</b></div><div class="b"><span style="width:94.6%;background:var(--critical)"></span></div></div>
+        <div class="barra"><div class="t"><span>Grupos (B-cubed)</span><b>0,983</b></div><div class="b"><span style="width:98.3%;background:var(--critical)"></span></div></div>
+      </div>
+    </div>
+  </div>
+  <p class="k" style="margin-top:26px">Operaciones encontradas sin mirar la verdad</p>
+  <div class="g3">
+    <div class="card" style="padding:16px 20px"><span class="chip op">op01 · 60 cuentas</span><p style="margin:8px 0 0;font-size:18px">Empuja «Gracias al proyecto hay trabajo…» <span class="muted">· cuentas de 4 días</span></p></div>
+    <div class="card" style="padding:16px 20px"><span class="chip op">op02 · cuentas antiguas</span><p style="margin:8px 0 0;font-size:18px">Empuja «Sin consulta libre e informada no hay licencia social» <span class="muted">· la más difícil</span></p></div>
+    <div class="card" style="padding:16px 20px"><span class="chip op">op03 · 24 cuentas</span><p style="margin:8px 0 0;font-size:18px">Empuja el rumor del hospital <span class="muted">· cuentas de 1 día, 100% nocturna</span></p></div>
+  </div>
+  <div class="pie"><span>docs/VALIDACION.md · reproducible con <code>make run && make score</code></span><span>7</span></div>
+</section>
+
+<!-- 8 · Costo, escala y almacenamiento -->
+<section class="slide" data-notas="<b>Costo y escala.</b> «Todo esto corre con un solo comando, en una notebook común: quince segundos para doscientos mil comentarios, sin GPU y con cero pesos de IA. Para millones de comentarios por día, el mismo SQL pasa de DuckDB a ClickHouse.»">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:var(--ok)">Costo, escala y almacenamiento · <b>20 pts</b></span></div>
+  <div class="g4">
+    <div class="card"><div class="big">15 <small>s</small></div><div class="lbl">200.000 comentarios, caché caliente (≈ 60 s en frío)</div></div>
+    <div class="card"><div class="big">USD 0</div><div class="lbl">de IA en la configuración por defecto</div></div>
+    <div class="card"><div class="big">~13</div><div class="lbl">llamadas LLM opcionales por corrida (una por narrativa), con caché</div></div>
+    <div class="card"><div class="big">0 <small>GPU</small></div><div class="lbl">notebook común; modelo local multilingual-e5-small</div></div>
+  </div>
+  <div class="g2" style="margin-top:20px">
+    <div class="card">
+      <p class="k">Almacenamiento: DuckDB + Parquet</p>
+      <ul class="lista" style="font-size:18px">
+        <li style="--c:var(--ok)">DuckDB en proceso: cero servidores, SQL columnar, <i>range joins</i> en &lt; 1 s.</li>
+        <li style="--c:var(--ok)">Parquet por etapa: el pipeline se retoma e inspecciona desde cualquier punto.</li>
+        <li style="--c:var(--ok)">Caché de embeddings por hash: un texto repetido nunca se re-embebe.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="k">A millones de comentarios por día</p>
+      <table style="font-size:16px">
+        <tr><td>CSV → Parquet</td><td>stream (Kafka/Redpanda) a Parquet por hora</td></tr>
+        <tr><td>DuckDB local</td><td>ClickHouse, <b>mismo SQL</b></td></tr>
+        <tr><td>Leiden por corrida</td><td>asignación incremental por kNN</td></tr>
+        <tr><td>Alertas</td><td>las mismas reglas como consultas continuas</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pie"><span>costo.json · README → Almacenamiento y Cómo escala</span><span>8</span></div>
+</section>
+
+<!-- 9 · Robustez -->
+<section class="slide" data-notas="<b>Robustez.</b> «Y como el set final es otro, lo probamos con temas que nunca vio, con datos sucios y con menos volumen: sigue funcionando.» Si preguntan por respuestas: modo degradado automático.">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:#7a5af5">Robustez del pipeline · <b>15 pts</b></span></div>
+  <h2>Un comando, de punta a punta: <code style="font-size:.8em">make entrega</code></h2>
+  <p class="sub" style="margin-bottom:18px">Semillas fijas y orden determinístico. Sin etiquetado manual. El jurado lo puede re-correr.</p>
+  <div class="card" style="padding:10px 18px">
+    <table>
+      <tr><th>Variante del set</th><th style="text-align:right">Total / 55</th><th>Lectura</th></tr>
+      <tr><td>Completo (referencia)</td><td class="n">53,62</td><td class="muted">—</td></tr>
+      <tr><td>Ensuciado: typos, ids duplicados, fechas rotas, filas desordenadas</td><td class="n">54,31</td><td><span class="chip ok">datos sucios no lo afectan</span></td></tr>
+      <tr><td>Otras semillas (7 / 123)</td><td class="n">53,50 · 53,00</td><td><span class="chip ok">estable</span></td></tr>
+      <tr><td>75% de los datos</td><td class="n">50,82</td><td><span class="chip ok">degrada suave</span></td></tr>
+      <tr><td><b>Temas nuevos</b> que nunca vio (sintético, narrativas)</td><td class="n">29,72 / 30</td><td><span class="chip ok">agnóstico al tema</span></td></tr>
+      <tr><td>Sin respuestas: modo degradado automático</td><td class="n">32,64</td><td class="muted">sin ese modo: 1,81</td></tr>
+    </table>
+  </div>
+  <div class="pie"><span>docs/VALIDACION.md · docs/SINTETICOS.md · <code>make validar</code></span><span>9</span></div>
+</section>
+
+<!-- 10 · Honestidad -->
+<section class="slide" data-notas="<b>Cierre (2:35).</b> «Medimos treinta y siete hipótesis y descartamos las que no funcionaban; no ajustamos nada a mano.» Si preguntan qué no detecta, decirlo sin vueltas.">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit">Método</span></div>
+  <h2>37 hipótesis medidas. Las que no funcionaron, descartadas</h2>
+  <div class="g3" style="margin-top:20px">
+    <div class="card"><p class="k">Sin sobreajuste</p><p style="margin:0;font-size:20px">Cero palabras del tema en el código. Umbrales relativos. Cada parámetro elegido por el <b>peor caso</b> sobre variantes, no por el set completo.</p></div>
+    <div class="card"><p class="k">Explicable</p><p style="margin:0;font-size:20px">Cada operación viene con su perfil (antigüedad, horario, foco) para que <b>una persona decida</b>. No juzga opiniones: juzga comportamiento.</p></div>
+    <div class="card"><p class="k">Lo que no detecta</p><p style="margin:0;font-size:20px">Campañas de cuentas antiguas que <b>rotan subgrupos</b> (ningún par coincide dos veces). Probamos 4 soluciones; lo documentamos como límite.</p></div>
+  </div>
+  <div class="card" style="margin-top:20px;display:flex;gap:28px;align-items:center">
+    <span class="chip op" style="font-size:16px">No toma partido</span>
+    <span style="font-size:20px">En práctica encuentra una operación <b>a favor</b> del proyecto minero y otra <b>en contra</b>.</span>
+  </div>
+  <div class="pie"><span>experimentos/ E01–E37 · docs/VALIDACION.md</span><span>10</span></div>
+</section>
+
+<!-- 11 · Los 100 puntos -->
+<section class="slide" data-notas="Respaldo: volver acá al terminar y dejarla de fondo durante las preguntas del jurado.">
+  <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit">Criterios del track · <b>100 pts</b></span></div>
+  <h2>Cada criterio, con su evidencia</h2>
+  <div class="card" style="padding:8px 18px;margin-top:10px">
+    <table>
+      <tr><th>Criterio</th><th style="text-align:right">Pts</th><th>Evidencia</th></tr>
+      <tr><td><span class="chip" style="color:var(--apoya);background:color-mix(in srgb,var(--apoya) 14%,transparent)">Calidad de narrativas</span></td><td class="n">30</td><td>29,70 en práctica · 29,72 sobre temas que nunca vio</td></tr>
+      <tr><td><span class="chip op">Detección de coordinación</span></td><td class="n">25</td><td>23,92 en práctica · F1 0,946 · virales genuinos no pasan</td></tr>
+      <tr><td><span class="chip ok">Costo, escala y almacenamiento</span></td><td class="n">20</td><td>15 s · USD 0 · DuckDB + Parquet · mismo SQL en ClickHouse</td></tr>
+      <tr><td><span class="chip" style="color:#7a5af5;background:color-mix(in srgb,#7a5af5 14%,transparent)">Robustez del pipeline</span></td><td class="n">15</td><td><code>make entrega</code> · datos sucios 54,31 · semillas fijas · tests de punta a punta</td></tr>
+      <tr><td><span class="chip em">Claridad y visualización</span></td><td class="n">10</td><td>Dashboard en vivo: qué circula, desde cuándo y quién lo empuja</td></tr>
+    </table>
+  </div>
+  <p class="k" style="margin-top:24px">Requisitos excluyentes</p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px">
+    <span class="chip ok" style="font-size:16px;padding:6px 12px">✓ Repo público con entrega/</span>
+    <span class="chip ok" style="font-size:16px;padding:6px 12px">✓ README: cómo correr, base y por qué, librerías</span>
+    <span class="chip ok" style="font-size:16px;padding:6px 12px">✓ Un comando sobre el set final</span>
+    <span class="chip ok" style="font-size:16px;padding:6px 12px">✓ Sin etiquetado manual</span>
+    <span class="chip ok" style="font-size:16px;padding:6px 12px">✓ Sin claves en el repo</span>
+    <span class="chip ok" style="font-size:16px;padding:6px 12px">✓ Gasto de IA en costo.json</span>
+  </div>
+  <div class="pie"><span>Fuente: README del desafío QualyData → Puntaje y Reglas</span><span>11</span></div>
+</section>
+
+<!-- 12 · Cierre -->
+<section class="slide oscura" data-gota data-notas="<b>Cierre.</b> «La próxima vez que a la una de la mañana aparezca un rumor y veinticuatro cuentas salgan a empujarlo, alguien va a saber quién está detrás. … Vertiente: qué circula, desde cuándo y quién lo empuja.»">
+  <div class="cab"><span class="marca"><span class="logo" style="background:#f0efec;color:#0d0d0d">__LOGO__</span>Vertiente</span><span class="crit" style="--c:#f2b42c">Gracias</span></div>
+  <div style="margin-top:90px">
+    <p class="sub" style="font-size:30px;max-width:1000px;color:#c3c2b7">La próxima vez que a la una de la mañana aparezca un rumor y veinticuatro cuentas salgan a empujarlo, alguien va a saber quién está detrás.</p>
+    <h1 class="vertiente" style="font-size:84px;margin-top:36px">Vertiente</h1>
+    <p class="sub" style="font-size:28px">Qué circula, desde cuándo y quién lo empuja.</p>
+  </div>
+  <div class="pie"><span>github.com/Shugar03/radar-narrativas</span><span>Sebastián Paz · Francisco Fernández · Antonio Chocobar</span></div>
+</section>
+
+</div>
+<div id="notas"></div>
+<div id="prog"></div>
+<div id="ayuda">← → navegar · N notas · F pantalla completa</div>
+<script>
+const LOGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-2.6 3.3-5 6.2-5 9a5 5 0 0 0 10 0c0-2.8-2.4-5.7-5-9z" fill="currentColor"/><path d="M3 19.5c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1" opacity=".6"/></svg>';
+document.querySelectorAll(".logo").forEach(el => { if (el.textContent.trim() === "__LOGO__") el.innerHTML = LOGO; });
+
+// --- fondo: corrientes de agua + la gota del logo con sus ondas
+const GOTA = "M12 2.5c-2.6 3.3-5 6.2-5 9a5 5 0 0 0 10 0c0-2.8-2.4-5.7-5-9z";
+function corriente(y, amp, fase, x0 = -20, x1 = 1300) {
+  let d = "";
+  for (let x = x0; x <= x1; x += 16) {
+    const v = y + amp * Math.sin(x / 150 + fase) + amp * 0.45 * Math.sin(x / 61 + fase * 1.7);
+    d += (d ? "L" : "M") + x + "," + v.toFixed(1);
+  }
+  return d;
+}
+function fondo(k, oscura, conGota) {
+  const id = "f" + k, azul = oscura ? "#3987e5" : "#2a78d6";
+  let s = `<defs><linearGradient id="${id}" x1="0" x2="1280" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="${azul}" stop-opacity="0"/><stop offset=".45" stop-color="${azul}" stop-opacity="${oscura ? .22 : .14}"/>
+    <stop offset="1" stop-color="${azul}" stop-opacity="${oscura ? .45 : .28}"/></linearGradient></defs>`;
+  const n = oscura ? 9 : 4, base = oscura ? 560 : 676, paso = oscura ? 18 : 11;
+  for (let j = 0; j < n; j++)
+    s += `<path d="${corriente(base + j * paso, oscura ? 14 - j * .6 : 5, k * 1.3 + j * .55)}" fill="none" stroke="url(#${id})" stroke-width="${oscura ? 1.6 : 1.2}"/>`;
+  if (conGota) {
+    const cx = 1060, cy = 468;
+    [[110, 20, .42], [190, 34, .28], [280, 50, .17], [380, 68, .09]].forEach(([rx, ry, o], r) =>
+      s += `<ellipse class="onda" style="animation-delay:${r * 1.1}s" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${azul}" stroke-opacity="${o}" stroke-width="1.6"/>`);
+    s += `<path d="${GOTA}" transform="translate(${cx - 12 * 13},${cy - 17.5 * 13}) scale(13)" fill="${azul}" fill-opacity=".16" stroke="${azul}" stroke-opacity=".7" stroke-width=".12"/>`;
+  } else if (!oscura) {
+    s += `<path d="${GOTA}" transform="translate(1035,-95) scale(22)" fill="#0b0b0b" fill-opacity=".035"/>`;
+    [[60, 9], [100, 15]].forEach(([rx, ry]) => s += `<ellipse cx="1299" cy="268" rx="${rx}" ry="${ry}" fill="none" stroke="#0b0b0b" stroke-opacity=".05" stroke-width="1.4"/>`);
+  }
+  return `<svg class="fondo" viewBox="0 0 1280 720" aria-hidden="true">${s}</svg>`;
+}
+document.querySelectorAll(".slide").forEach((sl, k) => {
+  const oscura = sl.classList.contains("oscura"), gota = sl.hasAttribute("data-gota");
+  sl.insertAdjacentHTML("afterbegin", fondo(k, oscura, gota));
+});
+const OLA = Array.from({length: 57}, (_, x) => (x ? "L" : "M") + x * 5 + "," + (9 + 5 * Math.sin(x * 5 / 40 * 2 * Math.PI)).toFixed(1)).join("");
+document.querySelectorAll("h1.vertiente").forEach(h => h.insertAdjacentHTML("afterend",
+  `<svg class="ola" viewBox="0 0 280 18" aria-hidden="true"><path d="${OLA}"/></svg>`));
+const deck = document.getElementById("deck"), slides = [...document.querySelectorAll(".slide")];
+const notas = document.getElementById("notas"), prog = document.getElementById("prog");
+let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+function ajustar() {
+  const s = Math.min(innerWidth / 1280, innerHeight / 720);
+  deck.style.transform = `scale(${s}) translate(-50%, -50%)`;
+}
+// --- demo: el video del panorama avanza 2,5 bloques de 6 h por segundo y se pausa solo en el día 6
+const video = document.getElementById("pano"), demo = document.getElementById("s-demo");
+const FPS = 2.5, NB = 56, PAUSA = 20, T0 = Date.UTC(2026, 8, 1, 3);
+let pausado = false;
+const relojT = document.getElementById("reloj-t"), reloj = document.getElementById("reloj");
+const fmtB = (b) => new Date(T0 + b * 6 * 3600e3).toLocaleString("es-AR", {weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/Argentina/Buenos_Aires"});
+function bloque() { return Math.min(NB - 1, Math.floor(video.currentTime * FPS + 1e-3)); }
+function pintarDemo() {
+  const b = bloque();
+  relojT.textContent = b === PAUSA ? "dom 06-09, 01:12" : fmtB(b);
+  reloj.classList.toggle("corre", !video.paused);
+  demo.querySelectorAll(".ev").forEach(el => el.classList.toggle("on", b >= +el.dataset.desde));
+  if (!pausado && b >= PAUSA && !video.paused) { pausado = true; video.pause(); }
+}
+function iniciarDemo() { pausado = false; video.currentTime = 0; video.play().catch(() => {}); }
+video.addEventListener("timeupdate", pintarDemo);
+video.addEventListener("pause", pintarDemo);
+video.addEventListener("play", pintarDemo);
+video.addEventListener("ended", () => { video.currentTime = video.duration; pintarDemo(); });
+(function loop() { if (!video.paused) pintarDemo(); requestAnimationFrame(loop); })();
+function alternarDemo() { if (video.ended) iniciarDemo(); else if (video.paused) video.play(); else video.pause(); }
+
+function ir(n) {
+  const antes = i;
+  i = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach((s, k) => s.classList.toggle("activa", k === i));
+  if (slides[i] === demo && (slides[antes] !== demo || !video.currentTime)) iniciarDemo();
+  if (slides[i] !== demo) video.pause();
+  notas.innerHTML = slides[i].dataset.notas || "";
+  prog.style.width = ((i + 1) / slides.length * 100) + "%";
+  history.replaceState(null, "", "#" + (i + 1));
+}
+addEventListener("resize", ajustar);
+addEventListener("keydown", (e) => {
+  if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); ir(i + 1); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); ir(i - 1); }
+  else if (e.key === "Home") ir(0);
+  else if (e.key === "End") ir(slides.length - 1);
+  else if (e.key.toLowerCase() === "p" && slides[i] === demo) alternarDemo();
+  else if (e.key.toLowerCase() === "r" && slides[i] === demo) iniciarDemo();
+  else if (e.key.toLowerCase() === "n") notas.style.display = notas.style.display === "block" ? "none" : "block";
+  else if (e.key.toLowerCase() === "f") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+});
+addEventListener("click", (e) => {
+  if (e.target.closest(".video-pano")) return alternarDemo();
+  if (!e.target.closest("#notas")) ir(e.clientX > innerWidth / 3 ? i + 1 : i - 1); });
+ajustar(); ir(i);
+setTimeout(() => document.getElementById("ayuda").style.display = "none", 4000);
+</script>
+</body>
+</html>

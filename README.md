@@ -1,4 +1,4 @@
-# Radar — narrativas y coordinación a escala
+# Vertiente — narrativas y coordinación a escala
 
 Hackathon Argentina Space 2026 · Desafío QualyData (Big Data) · Salta, 11–13 nov.
 

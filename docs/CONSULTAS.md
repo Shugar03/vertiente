@@ -2,7 +2,7 @@
 
 Mensaje listo para enviar a marketing@argentinaspace.com o para hacer en persona en la mesa de la organización:
 
-> Hola, somos el equipo Radar (desafío QualyData, Big Data). Unas consultas para la entrega:
+> Hola, somos el equipo Vertiente (desafío QualyData, Big Data). Unas consultas para la entrega:
 > 1. ¿Big Data y Streaming tienen premios separados (USD 1.000 / 600 / 400 cada uno) o es un único track?
 > 2. ¿A qué hora se publica el set final el viernes, y dónde (repo `qualydata-org/desafio-qualydata` en `datos/final`)?
 >    ¿A qué hora es el cierre de commits?

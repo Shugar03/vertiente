@@ -14,7 +14,7 @@ HTML
   shot "file://$TMP/p.html" "$2"; }
 SEG=$(python3 -c "import json;print(json.load(open('$COSTO'))['segundos'])")
 N=$(python3 -c "import json;print(json.load(open('$COSTO'))['comentarios_procesados'])")
-placa "<h1 style='font-size:44px;margin:0'>Radar de narrativas</h1><p style='color:#52514e'>Qué circula, desde cuándo y quién lo empuja.<br>La conversación misma es la etiqueta: las respuestas conectan los dos bandos de cada narrativa.<br>Una operación es repetición alineada: mismas cuentas, misma publicación, empujando lo mismo.</p>" "$TMP/a.png"
+placa "<h1 style='font-size:44px;margin:0'>Vertiente</h1><p style='color:#52514e'>Qué circula, desde cuándo y quién lo empuja.<br>La conversación misma es la etiqueta: las respuestas conectan los dos bandos de cada narrativa.<br>Una operación es repetición alineada: mismas cuentas, misma publicación, empujando lo mismo.</p>" "$TMP/a.png"
 placa "<h2 style='margin:0 0 12px'>Un comando: <code>make entrega</code></h2><p style='font-size:28px;margin:0'><b>$N</b> comentarios en <b>$SEG s</b> · notebook sin GPU · USD 0 de IA</p><p style='font-size:28px'>Práctica: <b>53,76 / 55</b> puntos automáticos (línea base 17)</p><p style='color:#52514e'>Robusto ante datos sucios, menos volumen, otras semillas y sin respuestas.</p>" "$TMP/b.png"
 NB=$(python3 -c "import re,json;h=open('$1').read();print(json.loads(re.search(r'const D = (.*?);\n', h).group(1))['n_bins'])")
 for ((b=0; b<NB; b++)); do shot "file://$DASH#t=$b" "$TMP/f$(printf %03d $b).png"; done

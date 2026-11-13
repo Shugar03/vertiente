@@ -3,7 +3,7 @@
 Para grabarlo el equipo. 16:9, 1920×1080. Locución en rioplatense + subtítulos (`subtitulos.srt`, ya sincronizados
 con este guion) + música suave de fondo. Se entiende aunque se proyecte sin sonido.
 
-**Mensaje único:** *Radar muestra en un minuto qué se dice, desde cuándo y quién lo empuja — con un comando, en
+**Mensaje único:** *Vertiente muestra en un minuto qué se dice, desde cuándo y quién lo empuja — con un comando, en
 segundos y sin gastar en IA.*
 
 ## Escenas
@@ -17,7 +17,7 @@ segundos y sin gastar en IA.*
 | 5 | 0:40–0:55 | **En vivo.** Click en **▶ Reproducir en vivo**. Dejar correr hasta el **día 6** (`02_dia6.png`): aparecen juntas la alerta de *narrativa emergente* y la de *operación op03*. Pausar ahí (click en ■). | "Reproducimos los catorce días. El día seis, a la una de la mañana, aparece un rumor nuevo… y en el mismo minuto, veinticuatro cuentas creadas el día anterior empiezan a empujarlo de madrugada." |
 | 6 | 0:55–1:05 | **Quién lo empuja.** Scroll al panel *Quién lo empuja* (`03_final.png`, columna derecha): op01, op02, op03 con cuentas, antigüedad y actividad nocturna. | "Tres operaciones, con su perfil: cuentas nuevas, cuentas antiguas que se responden entre sí, actividad nocturna. Qué empujan y desde cuándo." |
 | 7 | 1:05–1:15 | **Probado.** `docs/SINTETICOS.md` en GitHub (tabla de resultados) o placa con: **53,6 / 55 en práctica · narrativas 29,7/30 en temas que nunca vio · robusto a datos sucios**. | "Lo medimos con el puntaje oficial: cincuenta y tres coma seis sobre cincuenta y cinco. Y lo probamos con temas que nunca vio, datos sucios y menos volumen." |
-| 8 | 1:15–1:22 | **Cierre.** Placa final: **Radar** · *Qué circula, desde cuándo y quién lo empuja* · link al repo · nombres del equipo. | "Radar: narrativas y coordinación a escala. Explicable, rápido y barato." |
+| 8 | 1:15–1:22 | **Cierre.** Placa final: **Vertiente** · *Qué circula, desde cuándo y quién lo empuja* · link al repo · Sebastián Paz, Francisco Fernández y Antonio Chocobar. | "Vertiente: narrativas y coordinación a escala. Explicable, rápido y barato." |
 
 Duración total ≈ 1:22. Si sobra tiempo, la escena 5 es la que más luce: dejala respirar.
 
