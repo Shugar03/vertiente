@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Vertiente · guion del video demo</title>
+<style>
+@page { size: A4; margin: 11mm 13mm 12mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #0b0b0b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+header { display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #0b0b0b; padding-bottom: 10px; margin-bottom: 14px; }
+.logo { width: 34px; height: 34px; border-radius: 9px; background: #0b0b0b; color: #fff; display: grid; place-items: center; flex: none; }
+.logo svg { width: 21px; height: 21px; }
+h1 { font-size: 22px; margin: 0; letter-spacing: -.01em; }
+header p { margin: 0; color: #52514e; font-size: 13px; }
+header .dur { margin-left: auto; font-weight: 700; font-size: 13px; border: 1px solid #c3c2b7; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+.prep { background: #f1f0ea; border-radius: 10px; padding: 10px 14px; font-size: 13.5px; margin-bottom: 16px; }
+.prep b { font-weight: 700; }
+.bloque { break-inside: avoid; margin: 0 0 12px; padding-left: 14px; border-left: 4px solid #2a78d6; }
+.bloque.demo { border-color: #d03b3b; }
+.bloque.cierre { border-color: #e9a30c; }
+.cab { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+.cab h2 { font-size: 16px; margin: 0; }
+.cab .t { font-weight: 700; font-size: 13px; color: #52514e; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.acc { color: #2a78d6; font-size: 12.5px; font-weight: 650; margin: 5px 0 2px; }
+.bloque.demo .acc { color: #b52f2f; }
+.bloque.cierre .acc { color: #9a6a00; }
+.acc kbd { font: 700 12px ui-monospace, Consolas, monospace; border: 1px solid currentColor; border-radius: 4px; padding: 0 5px; }
+.dice { font-size: 16px; line-height: 1.38; margin: 0; }
+.dice b { background: #fff2c4; padding: 0 2px; border-radius: 3px; }
+.pausa { color: #898781; font-weight: 700; }
+.consejos { break-inside: avoid; border-top: 1px solid #e1e0d9; margin-top: 10px; padding-top: 10px; font-size: 13px; color: #33332f; }
+.consejos h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 6px; color: #52514e; }
+.consejos ul { margin: 0; padding-left: 18px; }
+.consejos li { margin: 3px 0; }
+footer { margin-top: 12px; font-size: 11px; color: #898781; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-2.6 3.3-5 6.2-5 9a5 5 0 0 0 10 0c0-2.8-2.4-5.7-5-9z" fill="currentColor"/><path d="M3 19.5c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1" opacity=".6"/></svg></div>
+  <div><h1>Vertiente · guion del video demo</h1><p>Desafío QualyData · Hackathon Argentina Space 2026 · un solo presentador</p></div>
+  <span class="dur">≤ 3:00</span>
+</header>
+
+<div class="prep"><b>Antes de grabar:</b> abrir <code>docs\slides\presentar.cmd</code> → un clic en la slide → OBS en la escena
+<b>“Slides Vertiente”</b> → <b>Iniciar grabación</b> con la slide 1 en pantalla → esperar 2 segundos y arrancar.
+Teclas: <b>→</b> avanzar · <b>P</b> pausa/sigue (slide 6) · <b>R</b> reinicia (slide 6).</div>
+
+<section class="bloque">
+  <div class="cab"><h2>Slide 1 → 2 · Hook</h2><span class="t">0:00 – 0:15</span></div>
+  <p class="acc"><kbd>→</kbd> a la slide 2 y empezar</p>
+  <p class="dice">“Domingo, una y doce de la mañana. Aparece un rumor nuevo: <i>‘van a cortar la cinta del hospital en campaña,
+  aunque no haya ni camas’</i>. En ese mismo minuto, veinticuatro cuentas creadas el día anterior empiezan a empujarlo.
+  <span class="pausa">…</span> ¿Casualidad? <span class="pausa">…</span> Nadie lo vio. Vertiente sí.”</p>
+</section>
+
+<section class="bloque">
+  <div class="cab"><h2>Slide 3 · El problema</h2><span class="t">0:15 – 0:30</span></div>
+  <p class="acc"><kbd>→</kbd> slide 3</p>
+  <p class="dice">“Somos Vertiente. Ese rumor estaba escondido entre doscientos mil comentarios. Leerlos uno por uno con IA
+  es lento y caro; buscar palabras clave no sirve, porque cada tema es distinto. Y una operación no se ve en un
+  comentario suelto.”</p>
+</section>
+
+<section class="bloque">
+  <div class="cab"><h2>Slide 4 → 5 · Cómo lo encontramos</h2><span class="t">0:30 – 1:05</span></div>
+  <p class="acc"><kbd>→</kbd> slide 4</p>
+  <p class="dice">“Usamos dos ideas. La primera: <b>la conversación misma es la etiqueta.</b> Cuando alguien le responde a
+  otro con un argumento, está discutiendo la misma narrativa desde el otro lado. Uniendo las respuestas, cada narrativa
+  aparece sola, con sus dos bandos, sin que nadie etiquete nada.”</p>
+  <p class="acc"><kbd>→</kbd> slide 5</p>
+  <p class="dice">“La segunda: <b>una operación se delata por la repetición.</b> No alcanza con coincidir una vez; lo
+  sospechoso es ver a las mismas cuentas, en la misma publicación, empujando lo mismo, a minutos de distancia, una y
+  otra vez.”</p>
+</section>
+
+<section class="bloque demo">
+  <div class="cab"><h2>Slide 6 · Demo</h2><span class="t">1:05 – 2:00</span></div>
+  <p class="acc"><kbd>→</kbd> slide 6 · el panorama arranca solo</p>
+  <p class="dice">“Esto es Vertiente sobre el set de práctica: los catorce días, todas las narrativas. Arriba, los que
+  apoyan; abajo, los que rechazan. Trece narrativas, encontradas solas.
+  Reproducimos los catorce días…”</p>
+  <p class="acc">a los 8 s se pausa sola en el día 6</p>
+  <p class="dice">“… y acá está. Domingo, una y doce: la narrativa nueva y, en el mismo minuto, la operación que la empuja.
+  <b>Lo mismo que les conté al principio.</b> Veinticuatro cuentas, creadas el día anterior, activas de madrugada.”</p>
+  <p class="acc"><kbd>P</kbd> sigue hasta el final · aparece la tercera tarjeta</p>
+  <p class="dice">“Y no es la única: hay otra de sesenta cuentas a favor del proyecto minero, y otra de cuentas con años de
+  antigüedad en contra. Vertiente no toma partido: encuentra lo armado de los dos lados.”</p>
+</section>
+
+<section class="bloque">
+  <div class="cab"><h2>Slide 7 → 8 → 9 · Por qué funciona</h2><span class="t">2:00 – 2:35</span></div>
+  <p class="acc"><kbd>→</kbd> slide 7</p>
+  <p class="dice">“En el set de práctica, con el puntaje oficial del desafío, sacamos <b>cincuenta y tres coma seis sobre
+  cincuenta y cinco</b>; la línea base es diecisiete.”</p>
+  <p class="acc"><kbd>→</kbd> slide 8</p>
+  <p class="dice">“Todo corre con un solo comando, en una notebook común, sin GPU y con <b>cero pesos</b> de IA. Para
+  millones de comentarios por día, el mismo SQL pasa de DuckDB a ClickHouse.”</p>
+  <p class="acc"><kbd>→</kbd> slide 9</p>
+  <p class="dice">“Y como el set final es otro, lo probamos con temas que nunca vio, con datos sucios y con menos volumen:
+  sigue funcionando. Sobre el set final, con temas nuevos, encontró solo <b>doce narrativas y dos operaciones</b>, en
+  seis minutos y sin gastar en IA.”</p>
+</section>
+
+<section class="bloque cierre">
+  <div class="cab"><h2>Slide 10 → 12 · Cierre</h2><span class="t">2:35 – 3:00</span></div>
+  <p class="acc"><kbd>→</kbd> slide 10</p>
+  <p class="dice">“Medimos treinta y siete hipótesis y descartamos las que no funcionaban; no ajustamos nada a mano.”</p>
+  <p class="acc"><kbd>→</kbd> <kbd>→</kbd> dos flechas seguidas a la slide 12</p>
+  <p class="dice"><span class="pausa">…</span> “La próxima vez que a la una de la mañana aparezca un rumor y veinticuatro
+  cuentas salgan a empujarlo, alguien va a saber quién está detrás.
+  <b>Vertiente: qué circula, desde cuándo y quién lo empuja.</b>”</p>
+  <p class="acc">dejar la slide 12 quieta 2–3 s → <b>Detener grabación</b></p>
+</section>
+
+<div class="consejos">
+  <h3>Al grabar</h3>
+  <ul>
+    <li>Si te trabás, no cortes: pausa, repetí la frase desde el principio y lo recortás en edición.</li>
+    <li>Probá 5 segundos de audio antes de la toma buena y escuchalos (volumen del micrófono).</li>
+    <li>La tecla <b>N</b> muestra las notas, pero <b>quedan grabadas</b>: leé de este papel o del celular.</li>
+    <li>Si te pasás de 3:00, acortá la pausa del día 6, no el cierre.</li>
+    <li>El 53,6 es de <b>práctica</b>: el set final no trae respuestas correctas, no tiene puntaje propio.</li>
+  </ul>
+</div>
+<footer>Sebastián Paz · Francisco Fernández · Antonio Chocobar · github.com/Shugar03/radar-narrativas</footer>
+</body>
+</html>

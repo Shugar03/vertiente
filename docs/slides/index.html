@@ -269,10 +269,10 @@ svg.ola path { fill: none; stroke: #3987e5; stroke-width: 3; stroke-linecap: rou
 </section>
 
 <!-- 8 · Costo, escala y almacenamiento -->
-<section class="slide" data-notas="<b>Costo y escala.</b> «Todo esto corre con un solo comando, en una notebook común: quince segundos para doscientos mil comentarios, sin GPU y con cero pesos de IA. Para millones de comentarios por día, el mismo SQL pasa de DuckDB a ClickHouse.»">
+<section class="slide" data-notas="<b>Costo y escala.</b> «Todo corre con un solo comando, en una notebook común, sin GPU y con cero pesos de IA. Para millones de comentarios por día, el mismo SQL pasa de DuckDB a ClickHouse.»">
   <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:var(--ok)">Costo, escala y almacenamiento · <b>20 pts</b></span></div>
   <div class="g4">
-    <div class="card"><div class="big">15 <small>s</small></div><div class="lbl">200.000 comentarios, caché caliente (≈ 60 s en frío)</div></div>
+    <div class="card"><div class="big">6 <small>min</small></div><div class="lbl">set final: 150.000 comentarios en frío, CPU sin GPU (≈ 30 s con caché)</div></div>
     <div class="card"><div class="big">USD 0</div><div class="lbl">de IA en la configuración por defecto</div></div>
     <div class="card"><div class="big">~13</div><div class="lbl">llamadas LLM opcionales por corrida (una por narrativa), con caché</div></div>
     <div class="card"><div class="big">0 <small>GPU</small></div><div class="lbl">notebook común; modelo local multilingual-e5-small</div></div>
@@ -300,7 +300,8 @@ svg.ola path { fill: none; stroke: #3987e5; stroke-width: 3; stroke-linecap: rou
 </section>
 
 <!-- 9 · Robustez -->
-<section class="slide" data-notas="<b>Robustez.</b> «Y como el set final es otro, lo probamos con temas que nunca vio, con datos sucios y con menos volumen: sigue funcionando.» Si preguntan por respuestas: modo degradado automático.">
+<section class="slide" data-notas="<b>Robustez.</b> «Y como el set final es otro, lo probamos con temas que nunca vio, con datos sucios y con menos volumen: sigue funcionando. Sobre el set final, con temas nuevos, encontró solo doce narrativas y dos operaciones, en seis minutos y sin gastar en IA.» Si preguntan por respuestas: modo degradado automático. No inventar un puntaje del set final.">
+
   <div class="cab"><span class="marca"><span class="logo">__LOGO__</span>Vertiente</span><span class="crit" style="--c:#7a5af5">Robustez del pipeline · <b>15 pts</b></span></div>
   <h2>Un comando, de punta a punta: <code style="font-size:.8em">make entrega</code></h2>
   <p class="sub" style="margin-bottom:18px">Semillas fijas y orden determinístico. Sin etiquetado manual. El jurado lo puede re-correr.</p>
@@ -314,6 +315,10 @@ svg.ola path { fill: none; stroke: #3987e5; stroke-width: 3; stroke-linecap: rou
       <tr><td><b>Temas nuevos</b> que nunca vio (sintético, narrativas)</td><td class="n">29,72 / 30</td><td><span class="chip ok">agnóstico al tema</span></td></tr>
       <tr><td>Sin respuestas: modo degradado automático</td><td class="n">32,64</td><td class="muted">sin ese modo: 1,81</td></tr>
     </table>
+  </div>
+  <div class="card" style="margin-top:14px;padding:14px 18px;display:flex;gap:18px;align-items:center;border-left:5px solid #7a5af5">
+    <span class="chip" style="color:#7a5af5;background:color-mix(in srgb,#7a5af5 14%,transparent);font-size:15px;white-space:nowrap">Set final · sin verdad</span>
+    <span style="font-size:19px"><b>12 narrativas</b> (3 emergentes) · <b>2 operaciones</b> (91 cuentas) · 375 s · USD 0 · dos corridas, <b>entrega idéntica</b></span>
   </div>
   <div class="pie"><span>docs/VALIDACION.md · docs/SINTETICOS.md · <code>make validar</code></span><span>9</span></div>
 </section>
@@ -343,7 +348,7 @@ svg.ola path { fill: none; stroke: #3987e5; stroke-width: 3; stroke-linecap: rou
       <tr><th>Criterio</th><th style="text-align:right">Pts</th><th>Evidencia</th></tr>
       <tr><td><span class="chip" style="color:var(--apoya);background:color-mix(in srgb,var(--apoya) 14%,transparent)">Calidad de narrativas</span></td><td class="n">30</td><td>29,70 en práctica · 29,72 sobre temas que nunca vio</td></tr>
       <tr><td><span class="chip op">Detección de coordinación</span></td><td class="n">25</td><td>23,92 en práctica · F1 0,946 · virales genuinos no pasan</td></tr>
-      <tr><td><span class="chip ok">Costo, escala y almacenamiento</span></td><td class="n">20</td><td>15 s · USD 0 · DuckDB + Parquet · mismo SQL en ClickHouse</td></tr>
+      <tr><td><span class="chip ok">Costo, escala y almacenamiento</span></td><td class="n">20</td><td>Set final en 6 min sin GPU · USD 0 · DuckDB + Parquet · mismo SQL en ClickHouse</td></tr>
       <tr><td><span class="chip" style="color:#7a5af5;background:color-mix(in srgb,#7a5af5 14%,transparent)">Robustez del pipeline</span></td><td class="n">15</td><td><code>make entrega</code> · datos sucios 54,31 · semillas fijas · tests de punta a punta</td></tr>
       <tr><td><span class="chip em">Claridad y visualización</span></td><td class="n">10</td><td>Dashboard en vivo: qué circula, desde cuándo y quién lo empuja</td></tr>
     </table>

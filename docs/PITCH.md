@@ -81,11 +81,11 @@ escala) en "Todo esto corre…" → slide 9 (robustez) en "Y como el set final e
 
 > "En el set de práctica, con el puntaje oficial del desafío, sacamos **cincuenta y tres coma seis sobre cincuenta y
 > cinco**; la línea base es diecisiete.
-> *(slide 8)* Todo esto corre con un solo comando, en una notebook común: **quince segundos** para doscientos mil
-> comentarios, sin GPU y con **cero pesos** de IA. Para millones de comentarios por día, el mismo SQL pasa de DuckDB
-> a ClickHouse.
-> *(slide 9)* El set final no trae respuestas correctas, así que ese número no se puede repetir ahí; por eso lo
-> probamos con temas que nunca vio, con datos sucios y con menos volumen: sigue funcionando."
+> *(slide 8)* Todo corre con un solo comando, en una notebook común, sin GPU y con **cero pesos** de IA. Para
+> millones de comentarios por día, el mismo SQL pasa de DuckDB a ClickHouse.
+> *(slide 9)* Y como el set final es otro, lo probamos con temas que nunca vio, con datos sucios y con menos volumen:
+> sigue funcionando. Sobre el set final, con temas nuevos, encontró solo **doce narrativas y dos operaciones**, en
+> seis minutos y sin gastar en IA."
 
 Si preguntan por el set final: **no inventar un puntaje**. Decir qué encontró (cuántas narrativas, operaciones y
 cuentas, en cuánto tiempo; ver `entrega/costo.json` y `demo/dashboard.html`) y que el puntaje lo calcula el jurado.
@@ -104,8 +104,8 @@ las preguntas).
 ### Versión de 30 s (pasillo, mentores, ascensor)
 
 > "Domingo, una y doce de la mañana: aparece un rumor sobre un hospital y, en el mismo minuto, veinticuatro cuentas
-> creadas el día anterior salen a empujarlo. Vertiente lo detecta solo, entre doscientos mil comentarios, en quince
-> segundos y sin gastar en IA. ¿Cómo? Las respuestas nos dicen qué narrativa discute cada uno y desde qué lado; y una
+> creadas el día anterior salen a empujarlo. Vertiente lo detecta solo, entre doscientos mil comentarios, sin GPU
+> y sin gastar en IA. ¿Cómo? Las respuestas nos dicen qué narrativa discute cada uno y desde qué lado; y una
 > operación se delata porque las mismas cuentas empujan lo mismo, una y otra vez."
 
 ### Datos del caso (para no equivocarse)
