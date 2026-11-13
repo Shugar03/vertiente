@@ -66,7 +66,7 @@ La `entrega/` commiteada se generó así en una PC con Windows 11 y CPU, sin GPU
 necesita internet una sola vez para bajar el modelo de embeddings (~500 MB); después corre sin red. Semillas fijas
 (`config.yaml`) y orden determinístico: en la misma máquina, dos corridas dan exactamente la misma entrega.
 
-Video de demo (2:28, con subtítulos): [docs/video/vertiente_demo.mp4](docs/video/vertiente_demo.mp4) · slides del pitch: [docs/slides/](docs/slides/index.html) ([PDF](docs/slides/vertiente.pdf)).
+Video de demo (2:28, con subtítulos): **[YouTube](https://youtu.be/tbo8o8xMv_M)** · [archivo](docs/video/vertiente_demo.mp4) · slides del pitch: [docs/slides/](docs/slides/index.html) ([PDF](docs/slides/vertiente.pdf)).
 
 LLM opcional: copiar `.env.example` a `.env` y poner `ANTHROPIC_API_KEY`. Sin clave el pipeline corre igual (usa la
 caché `cache/llm/` si existe y, si no, reglas locales).
