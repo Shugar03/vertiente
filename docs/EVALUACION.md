@@ -63,13 +63,18 @@ Reglas de postura del desafío:
 
 ## Set final
 
-- Se publica el **viernes 13 a la mañana** (hora a confirmar). Va en `datos/final/`, que **no se sube**.
-- Misma estructura, ~150.000 comentarios en 10 días, **otros temas, narrativas y campañas**.
+- Publicado el **jueves 12 a las 17** como release
+  [`set-final`](https://github.com/qualydata-org/desafio-qualydata/releases/tag/set-final) (no dentro del repo).
+  Se baja a `datos/final/`, que **no se sube**:
+  `gh release download set-final -R qualydata-org/desafio-qualydata -D datos/final` (o `make final`, que lo baja solo).
+- **Cierre: viernes 13 a las 13:00.** A esa hora se clona el repo y se anota el commit.
+- Misma estructura, ~150.000 comentarios en 10 días, 8 fuentes, ~12.000 cuentas, **otros temas, narrativas y
+  campañas**. **No trae verdad**: no hay puntaje propio sobre el set final.
 
 ## Preguntas abiertas para la organización
 
 1. ¿Big Data y Streaming tienen premios separados o es un solo track?
-2. Hora exacta de publicación del set final y de cierre.
+2. ~~Hora exacta de publicación del set final y de cierre.~~ Resuelta: jueves 12, 17 h (release) · cierre viernes 13, 13 h.
 3. ¿APIs de LLM pagas permitidas? ¿Dan créditos?
 4. Si el jurado re-corre: ¿con internet? ¿con nuestras claves?
 5. Duración máxima del video.

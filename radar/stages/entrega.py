@@ -30,7 +30,8 @@ def hardware() -> str:
 
 
 def _csv(df: pd.DataFrame, path: Path) -> None:
-    df.to_csv(path, index=False, encoding="utf-8")
+    # Orden fijo por id: DuckDB lee y une en paralelo, y sin esto dos corridas iguales escriben filas en otro orden.
+    df.sort_values(df.columns[0], kind="stable").to_csv(path, index=False, encoding="utf-8")
 
 
 def run(interim: Path, salida: Path, config: dict, segundos: float, uso_llm: dict | None = None) -> dict:

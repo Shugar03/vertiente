@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Entrega final de punta a punta (viernes 13). Un solo comando: `make final`.
 #
-#   1. Espera a que el set final aparezca (en el repo del desafío o en datos/final/), revisando cada INTERVALO s.
+#   1. Baja el set final del release `set-final` a datos/final/ (si no está), reintentando cada INTERVALO s.
 #   2. Corre el pipeline -> entrega/ (solo los 4 archivos oficiales), valida, testea; dashboard y video -> demo/.
 #   3. Commitea entrega/ (+ caché del LLM) y hace push a la rama que clona el jurado (main).
 #   4. Pasa el repo a público y lo verifica (requisito excluyente al cierre). PUBLICAR=0 lo saltea.
@@ -26,17 +26,23 @@ if [ "${NO_PUSH:-0}" != "1" ] && [ "$RAMA" != "$RAMA_ENTREGA" ]; then
   exit 1
 fi
 
-hay_final() { [ -f "$FINAL/comentarios.csv.gz" ] || [ -f "$FINAL/comentarios.csv" ]; }
+ARCHIVOS="fuentes.csv publicaciones.csv.gz comentarios.csv.gz cuentas.csv.gz"
+RELEASE="https://github.com/qualydata-org/desafio-qualydata/releases/download/set-final"
+hay_final() { for f in $ARCHIVOS; do [ -s "$FINAL/$f" ] || return 1; done; }
+
+# El set final se publica como release `set-final` del repo del desafío (no dentro del repo): se baja a datos/final/.
+bajar_final() {
+  mkdir -p "$FINAL"
+  if command -v gh >/dev/null 2>&1 && gh release download set-final -R qualydata-org/desafio-qualydata -D "$FINAL" --skip-existing 2>/dev/null; then
+    return 0
+  fi
+  for f in $ARCHIVOS; do [ -s "$FINAL/$f" ] || curl -fsSL -o "$FINAL/$f" "$RELEASE/$f" || return 1; done
+}
 
 until hay_final; do
-  if [ -d vendor/desafio/.git ]; then
-    git -C vendor/desafio pull -q || log "no se pudo actualizar vendor/desafio (¿red?)"
-    if [ -d vendor/desafio/datos/final ] && [ "$FINAL" = "datos/final" ]; then
-      mkdir -p datos && ln -sfn ../vendor/desafio/datos/final datos/final
-    fi
-  fi
+  bajar_final || true
   hay_final && break
-  log "set final todavía no publicado; reviso de nuevo en ${INTERVALO}s (Ctrl-C para cortar)"
+  log "set final todavía no disponible; reviso de nuevo en ${INTERVALO}s (Ctrl-C para cortar)"
   sleep "$INTERVALO"
 done
 log "set final encontrado en $FINAL"

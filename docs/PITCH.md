@@ -79,13 +79,16 @@ arreglos con el jurado mirando: pasar al plan B y seguir.
 **Pantalla:** flecha → slide 7 (puntaje) → slide 8 (costo y
 escala) en "Todo esto corre…" → slide 9 (robustez) en "Y como el set final es otro…".
 
-> "Con el puntaje oficial del desafío sacamos **cincuenta y tres coma seis sobre cincuenta y cinco**; la línea base
-> es diecisiete.
+> "En el set de práctica, con el puntaje oficial del desafío, sacamos **cincuenta y tres coma seis sobre cincuenta y
+> cinco**; la línea base es diecisiete.
 > *(slide 8)* Todo esto corre con un solo comando, en una notebook común: **quince segundos** para doscientos mil
 > comentarios, sin GPU y con **cero pesos** de IA. Para millones de comentarios por día, el mismo SQL pasa de DuckDB
 > a ClickHouse.
-> *(slide 9)* Y como el set final es otro, lo probamos con temas que nunca vio, con datos sucios y con menos volumen:
-> sigue funcionando."
+> *(slide 9)* El set final no trae respuestas correctas, así que ese número no se puede repetir ahí; por eso lo
+> probamos con temas que nunca vio, con datos sucios y con menos volumen: sigue funcionando."
+
+Si preguntan por el set final: **no inventar un puntaje**. Decir qué encontró (cuántas narrativas, operaciones y
+cuentas, en cuánto tiempo; ver `entrega/costo.json` y `demo/dashboard.html`) y que el puntaje lo calcula el jurado.
 
 ### 2:35 — Cierre (25 s)
 **Pantalla:** slide 10 → **dos flechas seguidas** a la slide 12 en "La próxima vez…" (la 11 se saltea; queda para

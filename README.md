@@ -49,14 +49,22 @@ Si uv da `invalid peer certificate` (antivirus o proxy que inspecciona HTTPS), a
 La primera corrida baja el modelo (~500 MB) y calcula los embeddings: tarda varios minutos en CPU; después quedan en
 caché.
 
-**Set final (viernes):** copiar los CSV a `datos/final/` y correr **un solo comando**:
+**Set final:** se publica como release `set-final` del desafío. Bajarlo a `datos/final/` y correr **un solo comando**:
 
 ```bash
+gh release download set-final -R qualydata-org/desafio-qualydata -D datos/final
 make entrega                    # = run + check sobre datos/final -> entrega/ (se commitea)
-make final                      # todo el viernes (desde main): espera el set, corre, valida, dashboard + video,
+make final                      # todo junto (desde main): baja el set si falta, corre, valida, dashboard + video,
                                 #   commit, push a main y repo público (PUBLICAR=0 lo saltea)
 make publicar                   # repo público (requisito excluyente al cierre)
 ```
+
+Sin `make` (Windows): `python -m radar run --datos datos/final --salida entrega` y
+`python scripts/check_entrega.py --datos datos/final --entrega entrega`.
+
+La `entrega/` commiteada se generó así en una PC con Windows 11 y CPU, sin GPU y sin LLM. La primera corrida
+necesita internet una sola vez para bajar el modelo de embeddings (~500 MB); después corre sin red. Semillas fijas
+(`config.yaml`) y orden determinístico: en la misma máquina, dos corridas dan exactamente la misma entrega.
 
 Video de demo (práctica): [docs/demo_practica.mp4](docs/demo_practica.mp4) — se regenera con `scripts/grabar_video.sh`.
 
