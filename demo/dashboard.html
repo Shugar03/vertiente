@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vertiente · narrativas y coordinación</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f6f5f1; --surface: #ffffff; --surface-2: #f1f0ea; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e6e5de; --axis: #c3c2b7; --ring: rgba(11,11,11,0.09); --shadow: 0 1px 2px rgba(11,11,11,.04), 0 4px 16px rgba(11,11,11,.04);
+  --apoya: #2a78d6; --rechaza: #eb6834; --critical: #d03b3b; --warning: #e9a30c; --accent: #0b0b0b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #171716; --surface-2: #1f1f1e; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2a2a28; --axis: #3a3a37; --ring: rgba(255,255,255,0.09); --shadow: none;
+    --apoya: #3987e5; --rechaza: #e0662f; --critical: #e5534b; --warning: #f2b42c; --accent: #f0efec;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #171716; --surface-2: #1f1f1e; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2a2a28; --axis: #3a3a37; --ring: rgba(255,255,255,0.09); --shadow: none;
+  --apoya: #3987e5; --rechaza: #e0662f; --critical: #e5534b; --warning: #f2b42c; --accent: #f0efec;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* --- encabezado */
+.top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--page) 86%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--ring); }
+.top .in { max-width: 1240px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 14px; }
+.logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--page); display: grid; place-items: center; flex: none; }
+.logo svg { width: 22px; height: 22px; }
+.marca-t h1 { font-size: 16px; margin: 0; letter-spacing: -.01em; }
+.marca-t p { margin: 0; color: var(--ink-2); font-size: 12px; }
+.top .esp { flex: 1; }
+.periodo { color: var(--ink-2); font-size: 12px; border: 1px solid var(--ring); border-radius: 999px; padding: 4px 10px; background: var(--surface); white-space: nowrap; }
+.icono { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--ring); background: var(--surface); display: grid; place-items: center; }
+.icono:hover { border-color: var(--axis); }
+
+main { max-width: 1240px; margin: 0 auto; padding: 22px 20px 64px; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: 14px; box-shadow: var(--shadow); }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); margin: 0; font-weight: 650; }
+.sec-cab { display: flex; align-items: baseline; gap: 10px; margin: 0 0 12px; }
+.sec-cab .cnt { color: var(--muted); font-size: 12px; }
+
+/* --- KPIs */
+.tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 1060px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+.tile { padding: 14px 16px; position: relative; overflow: hidden; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 26px; font-weight: 650; letter-spacing: -.02em; margin: 2px 0; font-variant-numeric: tabular-nums; }
+.tile .s { color: var(--muted); font-size: 12px; }
+.tile.critico::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--critical); }
+.tile.critico .v { color: var(--critical); }
+
+/* --- panorama y reproductor */
+.pano { padding: 16px 18px 14px; margin-bottom: 22px; }
+.pano .sec-cab { justify-content: space-between; flex-wrap: wrap; }
+.leyenda { display: flex; gap: 14px; color: var(--ink-2); font-size: 12px; flex-wrap: wrap; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
+.sw.l { width: 0; height: 12px; border-left: 2px dashed var(--muted); border-radius: 0; }
+.lienzo { position: relative; }
+.marcas { position: relative; height: 22px; }
+.marca { position: absolute; top: 2px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--surface); padding: 0; transform: translateX(-50%); transition: opacity .25s, transform .15s; }
+.marca:hover { transform: translateX(-50%) scale(1.25); }
+.marca.op { background: var(--critical); }
+.marca.em { background: var(--warning); }
+.marca.oculta { opacity: .2; }
+svg.pano-g { display: block; width: 100%; height: 150px; overflow: visible; }
+.ejes { position: relative; height: 20px; margin-top: 4px; color: var(--muted); font-size: 11px; }
+.ejes span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.player { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--grid); }
+.play { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; background: var(--accent); color: var(--page); padding: 7px 14px 7px 12px; font-weight: 600; font-size: 13px; }
+.play svg { width: 12px; height: 12px; }
+input[type=range] { flex: 1; accent-color: var(--accent); min-width: 80px; }
+.reloj { color: var(--ink-2); font-size: 12px; min-width: 150px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* --- layout principal */
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 22px; align-items: start; }
+@media (max-width: 960px) { .grid2 { grid-template-columns: 1fr; } }
+aside { display: grid; gap: 22px; }
+@media (min-width: 961px) { aside { position: sticky; top: 78px; max-height: calc(100vh - 92px); overflow: auto; padding-right: 2px; } }
+
+/* --- herramientas */
+.herr { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.buscar { flex: 1; min-width: 180px; position: relative; }
+.buscar input { width: 100%; padding: 8px 12px 8px 32px; border-radius: 10px; border: 1px solid var(--ring); background: var(--surface); outline: none; }
+.buscar input:focus { border-color: var(--axis); box-shadow: 0 0 0 3px var(--ring); }
+.buscar svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--muted); }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--ring); border-radius: 10px; padding: 2px; }
+.seg button { border: 0; background: transparent; border-radius: 8px; padding: 5px 10px; font-size: 12px; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); font-weight: 600; }
+select { padding: 7px 10px; border-radius: 10px; border: 1px solid var(--ring); background: var(--surface); font-size: 12px; }
+
+/* --- narrativas */
+.narr { padding: 14px 16px 12px; margin-bottom: 10px; transition: border-color .2s, box-shadow .2s; }
+.narr.sel { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+.narr .cab { display: flex; gap: 12px; align-items: flex-start; }
+.rank { flex: none; width: 28px; height: 28px; border-radius: 8px; background: var(--surface-2); color: var(--ink-2); display: grid; place-items: center; font-size: 12px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.narr .tt { flex: 1; min-width: 0; }
+.narr h3 { font-size: 15px; margin: 0; line-height: 1.3; letter-spacing: -.01em; }
+.meta { color: var(--ink-2); font-size: 12px; }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.badge { display: inline-flex; gap: 5px; align-items: center; font-size: 11px; font-weight: 650; border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+.badge.op { color: var(--critical); background: color-mix(in srgb, var(--critical) 12%, transparent); }
+.badge.em { color: color-mix(in srgb, var(--warning) 70%, var(--ink)); background: color-mix(in srgb, var(--warning) 16%, transparent); }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pol { margin: 10px 0 2px 40px; }
+.pol .bar { display: flex; height: 6px; border-radius: 999px; overflow: hidden; background: var(--rechaza); }
+.pol .bar span { background: var(--apoya); }
+.pol .pl { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-2); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.pol .pl b { color: var(--ink); }
+svg.serie { display: block; width: calc(100% - 40px); margin: 8px 0 4px 40px; height: 76px; overflow: visible; cursor: crosshair; }
+.chips { margin-left: 40px; }
+.chip { display: inline-block; font-size: 11px; background: var(--surface-2); border-radius: 6px; padding: 2px 7px; margin: 4px 4px 0 0; color: var(--ink-2); }
+.vacio { padding: 28px; text-align: center; color: var(--muted); }
+
+/* --- svg */
+.pa { fill: var(--apoya); fill-opacity: .88; }
+.pr { fill: var(--rechaza); fill-opacity: .88; }
+.gl { stroke: var(--grid); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.mid { stroke: var(--surface); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.orig { stroke: var(--ink-2); stroke-dasharray: 2 3; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.cursor { stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.cabezal { stroke: var(--accent); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.velo { fill: var(--surface); opacity: .82; }
+
+/* --- alertas */
+.panel { padding: 6px 6px; }
+.alerta { display: grid; grid-template-columns: 14px 1fr; gap: 10px; width: 100%; text-align: left; border: 0; background: transparent; border-radius: 10px; padding: 9px 10px; transition: opacity .3s, background .15s; position: relative; }
+.alerta:hover { background: var(--surface-2); }
+.alerta .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; }
+.alerta.op .dot { background: var(--critical); box-shadow: 0 0 0 3px color-mix(in srgb, var(--critical) 18%, transparent); }
+.alerta.em .dot { background: var(--warning); box-shadow: 0 0 0 3px color-mix(in srgb, var(--warning) 22%, transparent); }
+.alerta .tp { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; display: flex; justify-content: space-between; gap: 8px; }
+.alerta .tp .ts { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.alerta .tx { font-size: 13px; margin-top: 1px; }
+.alerta.oculta { opacity: .28; }
+
+/* --- operaciones */
+.opcard { padding: 14px 16px; }
+.opcard + .opcard { border-top: 1px solid var(--grid); }
+.opcard .cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.opcard .id { font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+.opcard .id::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--critical); }
+.opcard .emp { margin: 6px 0 10px; font-size: 13px; }
+.pill { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 1px 7px; color: #fff; }
+.pill.apoya { background: var(--apoya); } .pill.rechaza { background: var(--rechaza); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+.stats dt { color: var(--muted); font-size: 11px; }
+.stats dd { margin: 0; font-weight: 650; font-variant-numeric: tabular-nums; }
+.medidor { height: 4px; border-radius: 999px; background: var(--surface-2); margin-top: 4px; overflow: hidden; }
+.medidor span { display: block; height: 100%; background: var(--critical); border-radius: 999px; }
+.ver { margin-top: 12px; width: 100%; border: 1px solid var(--ring); background: var(--surface-2); border-radius: 8px; padding: 6px; font-size: 12px; font-weight: 600; }
+.ver:hover { border-color: var(--axis); }
+
+footer { max-width: 1240px; margin: 0 auto; padding: 0 20px 32px; color: var(--muted); font-size: 12px; }
+#tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--ring); border-radius: 10px; padding: 8px 10px; font-size: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.14); display: none; z-index: 20; min-width: 140px; }
+#tip b { display: block; margin-bottom: 4px; }
+#tip .f { display: flex; justify-content: space-between; gap: 12px; font-variant-numeric: tabular-nums; }
+.grid2 > * { min-width: 0; }
+@media (max-width: 760px) {
+  body { overflow-x: hidden; }
+  .periodo, .marca-t p { display: none; }
+  .ejes span:nth-child(even) { display: none; }
+  .reloj { min-width: 0; }
+  .herr .buscar { flex-basis: 100%; }
+  .pol, .chips { margin-left: 0; }
+  svg.serie { width: 100%; margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="in">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-2.6 3.3-5 6.2-5 9a5 5 0 0 0 10 0c0-2.8-2.4-5.7-5-9z" fill="currentColor"/><path d="M3 19.5c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1" opacity=".6"/></svg></div>
+    <div class="marca-t"><h1>Vertiente</h1><p>Qué circula, desde cuándo y quién lo empuja</p></div>
+    <div class="esp"></div>
+    <span class="periodo" id="periodo"></span>
+    <button class="icono" id="tema" aria-label="Cambiar tema" title="Cambiar tema"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <div class="tiles" id="tiles"></div>
+
+  <section class="card pano">
+    <div class="sec-cab">
+      <h2>Panorama del período</h2>
+      <span class="leyenda">
+        <span><span class="sw" style="background:var(--apoya)"></span>Apoya (arriba)</span>
+        <span><span class="sw" style="background:var(--rechaza)"></span>Rechaza (abajo)</span>
+        <span><span class="sw" style="background:var(--warning);border-radius:50%"></span>Narrativa emergente</span>
+        <span><span class="sw" style="background:var(--critical);border-radius:50%"></span>Operación coordinada</span>
+      </span>
+    </div>
+    <div class="lienzo">
+      <div class="marcas" id="marcas"></div>
+      <svg class="pano-g serie" id="pano" preserveAspectRatio="none" role="img" aria-label="Comentarios de todas las narrativas en el tiempo"></svg>
+      <div class="ejes" id="ejes"></div>
+    </div>
+    <div class="player">
+      <button class="play" id="vivo"></button>
+      <input type="range" id="slider" min="0" step="1" aria-label="Momento del período">
+      <span class="reloj" id="reloj"></span>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <div class="sec-cab"><h2>Qué circula</h2><span class="cnt" id="cnt"></span></div>
+      <div class="herr">
+        <label class="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Buscar por título o frase clave" aria-label="Buscar narrativa"></label>
+        <div class="seg" id="filtro" role="group" aria-label="Filtro">
+          <button data-v="todas" aria-pressed="true">Todas</button><button data-v="emergentes" aria-pressed="false">Emergentes</button><button data-v="empujadas" aria-pressed="false">Empujadas</button>
+        </div>
+        <select id="orden" aria-label="Ordenar">
+          <option value="volumen">Más volumen</option><option value="reciente">Más recientes</option><option value="disputa">Más disputadas</option>
+        </select>
+        <div class="seg" id="escala" role="group" aria-label="Escala">
+          <button data-v="comun" aria-pressed="true" title="Misma escala para comparar volúmenes">Escala común</button><button data-v="propia" aria-pressed="false" title="Cada serie con su propia escala">Propia</button>
+        </div>
+      </div>
+      <div id="narrativas"></div>
+    </section>
+    <aside>
+      <section>
+        <div class="sec-cab"><h2>Alertas</h2><span class="cnt" id="cnt-al"></span></div>
+        <div class="card panel" id="alertas"></div>
+      </section>
+      <section>
+        <div class="sec-cab"><h2>Quién lo empuja</h2><span class="cnt" id="cnt-op"></span></div>
+        <div class="card" id="ops"></div>
+      </section>
+    </aside>
+  </div>
+</main>
+<footer>Vertiente · datos sintéticos del desafío QualyData · Argentina Space 2026 · horario de Argentina (UTC−3)</footer>
+<div id="tip" role="status"></div>
+<script>
+const D = {"inicio": "2026-10-05T00:00:00-03:00", "bin_h": 6, "n_bins": 40, "resumen": {"comentarios": 150000, "narrativas": 12, "ruido_pct": 19.8, "operaciones": 2, "cuentas_coordinadas": 91, "segundos": 27.7, "usd_mil": 0.0}, "narrativas": [{"id": "n02", "titulo": "Zona liberada total, los chorros lo saben.", "claves": ["liberada", "policia", "casa", "casualidad", "abandonados"], "origen": "2026-10-05T08:21:05-03:00", "origen_bin": 1, "emergente": false, "apoya": 9338, "rechaza": 8767, "s_apoya": [0, 111, 487, 732, 25, 449, 502, 856, 21, 97, 396, 213, 35, 182, 132, 395, 15, 90, 169, 172, 13, 64, 119, 432, 11, 173, 160, 254, 107, 78, 554, 352, 20, 186, 157, 354, 25, 439, 286, 475], "s_rechaza": [0, 99, 441, 703, 16, 408, 466, 756, 9, 123, 433, 241, 24, 172, 121, 331, 20, 93, 164, 192, 8, 91, 138, 425, 21, 159, 149, 260, 94, 64, 492, 301, 12, 186, 151, 316, 11, 383, 262, 432], "operacion": null}, {"id": "n05", "titulo": "Calle iluminada es calle segura.", "claves": ["camaras", "calle", "pongan", "luces", "iluminada"], "origen": "2026-10-05T08:19:13-03:00", "origen_bin": 1, "emergente": false, "apoya": 8882, "rechaza": 5679, "s_apoya": [0, 63, 237, 415, 13, 244, 270, 472, 12, 84, 284, 171, 38, 140, 96, 284, 9, 80, 175, 159, 1, 70, 136, 460, 39, 239, 200, 343, 110, 77, 723, 462, 18, 275, 226, 482, 21, 661, 471, 622], "s_rechaza": [0, 33, 136, 269, 2, 168, 177, 281, 8, 52, 173, 101, 29, 93, 70, 173, 5, 49, 95, 110, 6, 38, 96, 283, 16, 147, 166, 214, 85, 68, 486, 285, 14, 162, 129, 323, 8, 429, 294, 406], "operacion": null}, {"id": "n00", "titulo": "Nadie les explicó a las familias adónde se van a ir cuando llenen el dique.", "claves": ["familias", "zona retamas", "paraje", "inundar", "pagan"], "origen": "2026-10-05T05:36:20-03:00", "origen_bin": 0, "emergente": false, "apoya": 7461, "rechaza": 6340, "s_apoya": [2, 214, 444, 237, 9, 160, 333, 422, 9, 238, 1598, 370, 10, 92, 144, 63, 4, 161, 68, 278, 8, 208, 200, 192, 17, 34, 87, 139, 7, 184, 166, 120, 3, 261, 204, 183, 21, 65, 298, 208], "s_rechaza": [1, 161, 358, 202, 11, 139, 301, 359, 6, 206, 1340, 303, 6, 77, 133, 37, 5, 132, 51, 254, 14, 178, 184, 180, 21, 31, 71, 131, 5, 132, 169, 98, 10, 173, 177, 151, 21, 47, 272, 193], "operacion": null}, {"id": "n04", "titulo": "Pan y circo, eso es el festival.", "claves": ["insumos", "sale", "arreglas", "pan", "calles"], "origen": "2026-10-05T06:00:44-03:00", "origen_bin": 1, "emergente": false, "apoya": 7494, "rechaza": 6299, "s_apoya": [17, 359, 358, 443, 33, 290, 333, 443, 28, 342, 357, 177, 16, 95, 246, 289, 17, 189, 517, 102, 11, 75, 149, 71, 4, 267, 240, 338, 7, 203, 440, 449, 6, 44, 120, 167, 10, 96, 107, 39], "s_rechaza": [14, 297, 293, 410, 21, 257, 283, 393, 27, 285, 282, 166, 8, 74, 243, 237, 18, 174, 440, 81, 9, 79, 93, 67, 3, 241, 193, 232, 9, 161, 357, 372, 8, 35, 108, 151, 2, 73, 64, 39], "operacion": {"id": "op02", "postura": "apoya"}}, {"id": "n01", "titulo": "Los regantes esperamos esta obra hace décadas.", "claves": ["agua", "riego", "veranos", "queda", "treinta años"], "origen": "2026-10-05T05:55:09-03:00", "origen_bin": 0, "emergente": false, "apoya": 7595, "rechaza": 5400, "s_apoya": [1, 141, 312, 188, 6, 138, 240, 332, 9, 214, 1230, 281, 10, 85, 148, 54, 5, 191, 75, 319, 12, 235, 331, 238, 39, 53, 137, 179, 7, 205, 316, 181, 10, 267, 306, 226, 27, 88, 445, 314], "s_rechaza": [2, 88, 204, 124, 6, 99, 179, 248, 1, 159, 968, 221, 4, 60, 130, 33, 2, 119, 71, 214, 8, 169, 194, 150, 24, 38, 87, 123, 9, 161, 212, 125, 9, 226, 205, 161, 29, 57, 282, 199], "operacion": {"id": "op01", "postura": "apoya"}}, {"id": "n10", "titulo": "Controlen las motos sin patente y se acaban los arrebatos.", "claves": ["moto", "fijo", "tienen", "horario", "arrebatos"], "origen": "2026-10-05T12:56:01-03:00", "origen_bin": 2, "emergente": false, "apoya": 5917, "rechaza": 4967, "s_apoya": [0, 24, 120, 190, 7, 97, 129, 210, 3, 27, 128, 70, 15, 66, 62, 171, 6, 52, 110, 111, 3, 40, 79, 314, 9, 151, 134, 263, 89, 57, 594, 380, 19, 212, 178, 427, 16, 485, 318, 551], "s_rechaza": [0, 31, 112, 150, 9, 84, 114, 152, 4, 28, 97, 65, 15, 63, 53, 134, 7, 50, 88, 75, 5, 40, 63, 254, 12, 131, 103, 222, 73, 58, 480, 291, 19, 176, 165, 367, 9, 416, 295, 457], "operacion": null}, {"id": "n08", "titulo": "Gracias al festival muchos hacen la diferencia del año.", "claves": ["año", "llenos", "semana", "gracias", "festival mejor"], "origen": "2026-10-05T06:15:30-03:00", "origen_bin": 1, "emergente": false, "apoya": 5905, "rechaza": 4022, "s_apoya": [7, 196, 197, 268, 14, 196, 200, 220, 10, 181, 212, 126, 5, 47, 169, 182, 9, 165, 402, 79, 10, 52, 116, 49, 4, 276, 231, 346, 9, 216, 482, 576, 8, 61, 113, 206, 8, 94, 108, 55], "s_rechaza": [1, 138, 141, 183, 7, 150, 126, 172, 8, 150, 127, 91, 2, 31, 115, 112, 5, 109, 265, 53, 4, 28, 77, 32, 1, 177, 162, 222, 6, 165, 355, 346, 6, 40, 87, 131, 7, 61, 90, 39], "operacion": null}, {"id": "n03", "titulo": "Se endeudan en dólares para una obra con sobreprecio.", "claves": ["sobreprecio", "dolares", "ningun", "endeudan", "lado"], "origen": "2026-10-05T06:21:16-03:00", "origen_bin": 1, "emergente": false, "apoya": 4675, "rechaza": 4099, "s_apoya": [0, 44, 112, 42, 3, 49, 93, 142, 2, 83, 663, 136, 1, 53, 76, 27, 4, 118, 53, 209, 13, 167, 178, 164, 22, 35, 91, 145, 9, 210, 203, 148, 5, 287, 255, 160, 43, 52, 335, 243], "s_rechaza": [0, 43, 89, 36, 1, 38, 84, 114, 4, 76, 514, 107, 4, 39, 60, 26, 0, 125, 50, 186, 7, 124, 195, 145, 16, 33, 99, 144, 3, 169, 181, 137, 3, 244, 265, 157, 28, 50, 283, 220], "operacion": null}, {"id": "n07", "titulo": "Cuatro empanadas al precio de una docena", "claves": ["precio", "cobran", "vecinos", "restaurante", "turismo"], "origen": "2026-10-05T07:01:30-03:00", "origen_bin": 1, "emergente": false, "apoya": 3206, "rechaza": 3170, "s_apoya": [1, 112, 93, 155, 12, 95, 103, 115, 7, 69, 90, 46, 1, 22, 80, 60, 4, 57, 122, 39, 0, 28, 39, 22, 0, 165, 160, 168, 9, 160, 359, 352, 2, 37, 88, 133, 4, 69, 93, 35], "s_rechaza": [0, 93, 94, 145, 8, 66, 92, 119, 4, 68, 117, 49, 3, 17, 63, 64, 4, 71, 135, 51, 2, 38, 55, 49, 3, 143, 148, 151, 5, 155, 316, 310, 7, 63, 87, 148, 6, 66, 99, 56], "operacion": null}, {"id": "n06", "titulo": "Investiguen quién es el dueño de la constructora, se van a sorprender.", "claves": ["funcionario", "gano", "licitacion", "constructora", "empresa"], "origen": "2026-10-09T07:43:06-03:00", "origen_bin": 17, "emergente": true, "apoya": 2951, "rechaza": 2571, "s_apoya": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 346, 118, 309, 11, 243, 252, 188, 31, 50, 108, 122, 6, 137, 155, 99, 2, 148, 141, 101, 21, 30, 171, 162], "s_rechaza": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 342, 105, 277, 12, 216, 193, 186, 24, 37, 64, 117, 4, 126, 141, 70, 5, 110, 124, 79, 23, 27, 156, 133], "operacion": null}, {"id": "n11", "titulo": "Si cierran la comisaría del barrio esto va a ser tierra de nadie.", "claves": ["cierran comisaria", "comisaria norte", "tierra", "sacan", "mes"], "origen": "2026-10-09T06:02:47-03:00", "origen_bin": 17, "emergente": true, "apoya": 1778, "rechaza": 1466, "s_apoya": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 31, 69, 66, 1, 26, 65, 217, 4, 67, 64, 113, 59, 29, 197, 120, 5, 57, 48, 119, 32, 127, 97, 154], "s_rechaza": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 28, 63, 75, 2, 20, 55, 161, 8, 47, 59, 90, 42, 16, 198, 105, 4, 53, 39, 89, 3, 99, 88, 121], "operacion": null}, {"id": "n09", "titulo": "Se cae la grilla, los artistas grandes no confirmaron.", "claves": ["artistas", "cierre", "grilla", "banda", "entrada"], "origen": "2026-10-12T19:20:15-03:00", "origen_bin": 31, "emergente": true, "apoya": 925, "rechaza": 1409, "s_apoya": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 407, 15, 59, 117, 168, 9, 64, 59, 27], "s_rechaza": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 616, 19, 96, 167, 282, 9, 102, 81, 37], "operacion": null}], "operaciones": [{"id": "op01", "cuentas": 51, "comentarios": 359, "narrativa": "n01", "postura": "apoya", "foco": 0.655, "antiguedad": 6.0, "nocturna": 0.006, "inicio": "2026-10-05T11:04:48-03:00", "inicio_bin": 1}, {"id": "op02", "cuentas": 40, "comentarios": 857, "narrativa": "n04", "postura": "apoya", "foco": 0.258, "antiguedad": 1953.5, "nocturna": 0.029, "inicio": "2026-10-05T07:07:07-03:00", "inicio_bin": 1}], "alertas": [{"bin": 1, "ts": "2026-10-05T07:07:07-03:00", "tipo": "Operación coordinada", "narrativa": "n04", "texto": "op02 · 40 cuentas empujan n04 (apoya) «Pan y circo, eso es el festival.»"}, {"bin": 1, "ts": "2026-10-05T11:04:48-03:00", "tipo": "Operación coordinada", "narrativa": "n01", "texto": "op01 · 51 cuentas empujan n01 (apoya) «Los regantes esperamos esta obra hace décadas.»"}, {"bin": 17, "ts": "2026-10-09T06:02:47-03:00", "tipo": "Narrativa emergente", "narrativa": "n11", "texto": "n11 · «Si cierran la comisaría del barrio esto va a ser tierra de nadie.»"}, {"bin": 17, "ts": "2026-10-09T07:43:06-03:00", "tipo": "Narrativa emergente", "narrativa": "n06", "texto": "n06 · «Investiguen quién es el dueño de la constructora, se van a sorprender.»"}, {"bin": 31, "ts": "2026-10-12T19:20:15-03:00", "tipo": "Narrativa emergente", "narrativa": "n09", "texto": "n09 · «Se cae la grilla, los artistas grandes no confirmaron.»"}]};
+const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+const TZ = "America/Argentina/Buenos_Aires";
+const fmt = new Intl.NumberFormat("es-AR"), pct = (v) => Math.round(v * 100) + "%";
+const NB = D.n_bins, BPD = Math.max(1, Math.round(24 / D.bin_h)), t0 = new Date(D.inicio).getTime();
+const msDe = (b) => t0 + b * D.bin_h * 3600e3;
+const LARGO = {weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: TZ};
+const CORTO = {weekday: "short", day: "2-digit", month: "2-digit", timeZone: TZ};
+const fecha = (b) => new Date(msDe(b)).toLocaleString("es-AR", LARGO);
+const dia = (b) => new Date(msDe(b)).toLocaleString("es-AR", CORTO);
+const hora = (iso) => new Date(iso).toLocaleString("es-AR", LARGO);
+const esc = (t) => String(t).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const clamp = (v) => Math.max(0, Math.min(NB - 1, v));
+const xp = (b) => NB > 1 ? b / (NB - 1) * 100 : 0;
+const narrDe = Object.fromEntries(D.narrativas.map(n => [n.id, n]));
+const total = (n) => n.apoya + n.rechaza;
+const rank = Object.fromEntries([...D.narrativas].sort((a, b) => total(b) - total(a)).map((n, i) => [n.id, i + 1]));
+let cur = NB - 1, sel = null, timer = null;
+const estado = {q: "", filtro: "todas", orden: "volumen", escala: "comun"};
+
+// --- encabezado y KPIs
+$("#periodo").textContent = `${dia(0)} – ${dia(NB - 1)} · ${Math.round(NB / BPD)} días`;
+const R = D.resumen;
+const tiles = [
+  ["Comentarios", fmt.format(R.comentarios), "procesados"],
+  ["Narrativas", R.narrativas, `${D.narrativas.filter(n => n.emergente).length} emergentes`],
+  ["Ruido", String(R.ruido_pct).replace(".", ",") + "%", "descartado"],
+  ["Operaciones", R.operaciones, "coordinadas detectadas", R.operaciones ? "critico" : ""],
+  ["Cuentas", fmt.format(R.cuentas_coordinadas), "en operaciones", R.cuentas_coordinadas ? "critico" : ""],
+  ["Pipeline", R.segundos != null ? fmt.format(Math.round(R.segundos)) + " s" : "—", `USD ${(R.usd_mil || 0).toFixed(2).replace(".", ",")} / 1.000 coment.`],
+];
+$("#tiles").innerHTML = tiles.map(([k, v, s, c]) => `<div class="card tile ${c || ""}"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
+
+// --- series (apoya arriba, rechaza abajo, mismas reglas en panorama y tarjetas)
+function serie(sa, sr, ym, W, H, origen) {
+  const M = H / 2, X = (b) => (NB > 1 ? b * W / (NB - 1) : 0).toFixed(1);
+  const up = (v) => (M - 1 - v * (M - 3) / ym).toFixed(1), dn = (v) => (M + 1 + v * (M - 3) / ym).toFixed(1);
+  const area = (s, f, base) => `M0,${base}` + s.map((v, i) => `L${X(i)},${f(v)}`).join("") + `L${W},${base}Z`;
+  let g = "";
+  for (let b = BPD; b < NB; b += BPD) g += `<line class="gl" x1="${X(b)}" x2="${X(b)}" y1="0" y2="${H}"/>`;
+  return g + `<path class="pa" d="${area(sa, up, M - 1)}"/><path class="pr" d="${area(sr, dn, M + 1)}"/>`
+    + `<line class="mid" x1="0" x2="${W}" y1="${M}" y2="${M}"/>`
+    + (origen != null ? `<line class="orig" x1="${X(origen)}" x2="${X(origen)}" y1="0" y2="${H}"/>` : "")
+    + `<line class="cursor" x1="0" x2="0" y1="0" y2="${H}" visibility="hidden"/>`
+    + `<rect class="velo" x="${W}" y="-2" width="0" height="${H + 4}"/>`;
+}
+
+// --- panorama
+const totA = Array.from({length: NB}, (_, b) => D.narrativas.reduce((s, n) => s + n.s_apoya[b], 0));
+const totR = Array.from({length: NB}, (_, b) => D.narrativas.reduce((s, n) => s + n.s_rechaza[b], 0));
+const PW = 1000, PH = 150, pano = $("#pano");
+pano.setAttribute("viewBox", `0 0 ${PW} ${PH}`);
+pano.innerHTML = serie(totA, totR, Math.max(1, ...totA, ...totR), PW, PH, null) + `<line class="cabezal" x1="${PW}" x2="${PW}" y1="0" y2="${PH}"/>`;
+let ej = "";
+for (let b = 0; b < NB; b += BPD) ej += `<span style="left:${xp(Math.min(b + BPD / 2, NB - 1))}%">${dia(b)}</span>`;
+$("#ejes").innerHTML = ej;
+const porBin = {};
+$("#marcas").innerHTML = D.alertas.map(a => {
+  const k = porBin[a.bin] = (porBin[a.bin] || 0) + 1, op = a.tipo.startsWith("Op");
+  return `<button class="marca ${op ? "op" : "em"}" data-n="${a.narrativa || ""}" data-bin="${a.bin}" style="left:calc(${xp(a.bin)}% + ${(k - 1) * 12}px)" title="${esc(a.tipo + " · " + a.texto)}" aria-label="${esc(a.tipo + ": " + a.texto)}"></button>`;
+}).join("");
+
+// --- tooltip con crosshair
+const tip = $("#tip");
+function conTooltip(svg, valores) {
+  const c = svg.querySelector(".cursor"), W = svg.viewBox.baseVal.width;
+  svg.addEventListener("pointermove", (e) => {
+    const r = svg.getBoundingClientRect();
+    const b = clamp(Math.round((e.clientX - r.left) / r.width * (NB - 1)));
+    const X = NB > 1 ? b * W / (NB - 1) : 0;
+    c.setAttribute("x1", X); c.setAttribute("x2", X); c.setAttribute("visibility", "visible");
+    const [a, re] = valores(b);
+    tip.innerHTML = `<b>${fecha(b)}</b><div class="f"><span><span class="sw" style="background:var(--apoya)"></span>Apoya</span><span>${fmt.format(a)}</span></div><div class="f"><span><span class="sw" style="background:var(--rechaza)"></span>Rechaza</span><span>${fmt.format(re)}</span></div>`;
+    tip.style.display = "block";
+    const izq = e.clientX + 14 + tip.offsetWidth > innerWidth ? e.clientX - 14 - tip.offsetWidth : e.clientX + 14;
+    tip.style.left = izq + "px"; tip.style.top = (e.clientY + 14) + "px";
+  });
+  svg.addEventListener("pointerleave", () => { tip.style.display = "none"; c.setAttribute("visibility", "hidden"); });
+}
+conTooltip(pano, (b) => [totA[b], totR[b]]);
+
+// --- narrativas
+const YMAX = Math.max(1, ...D.narrativas.flatMap(n => n.s_apoya.concat(n.s_rechaza)));
+const W = 640, H = 76;
+function tarjeta(n) {
+  const t = total(n), ap = t ? n.apoya / t : 0;
+  const ym = estado.escala === "propia" ? Math.max(1, ...n.s_apoya, ...n.s_rechaza) : YMAX;
+  return `<article class="card narr${sel === n.id ? " sel" : ""}" id="narr-${n.id}">
+    <div class="cab">
+      <span class="rank" title="Puesto por volumen">${rank[n.id]}</span>
+      <div class="tt"><h3>${esc(n.titulo)}</h3><div class="meta">${n.id} · desde ${hora(n.origen)} · ${fmt.format(t)} comentarios</div></div>
+      <div class="badges">${n.emergente ? '<span class="badge em">Emergente</span>' : ""}${n.operacion ? `<span class="badge op">Empujada por ${n.operacion.id}</span>` : ""}</div>
+    </div>
+    <div class="pol" title="Postura de los comentarios">
+      <div class="bar"><span style="width:${ap * 100}%"></span></div>
+      <div class="pl"><span><b>${pct(ap)}</b> apoya · ${fmt.format(n.apoya)}</span><span>${fmt.format(n.rechaza)} · <b>${pct(1 - ap)}</b> rechaza</span></div>
+    </div>
+    <svg class="serie" data-id="${n.id}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Comentarios cada ${D.bin_h} horas: ${esc(n.titulo)}">${serie(n.s_apoya, n.s_rechaza, ym, W, H, n.origen_bin)}</svg>
+    <div class="chips">${n.claves.map(k => `<span class="chip">${esc(k)}</span>`).join("")}</div>
+  </article>`;
+}
+function visibles() {
+  const q = estado.q.trim().toLowerCase();
+  let l = D.narrativas.filter(n =>
+    (estado.filtro !== "emergentes" || n.emergente) && (estado.filtro !== "empujadas" || n.operacion) &&
+    (!q || (n.titulo + " " + n.id + " " + n.claves.join(" ")).toLowerCase().includes(q)));
+  const disputa = (n) => total(n) ? Math.abs(n.apoya / total(n) - 0.5) : 1;
+  const ord = {volumen: (a, b) => total(b) - total(a), reciente: (a, b) => b.origen.localeCompare(a.origen), disputa: (a, b) => disputa(a) - disputa(b)};
+  return l.sort(ord[estado.orden]);
+}
+function pintar() {
+  const l = visibles();
+  $("#cnt").textContent = l.length === D.narrativas.length ? `${l.length} narrativas` : `${l.length} de ${D.narrativas.length}`;
+  $("#narrativas").innerHTML = l.length ? l.map(tarjeta).join("") : '<div class="card vacio">Ninguna narrativa coincide con el filtro.</div>';
+  $$("#narrativas svg.serie").forEach(svg => { const n = narrDe[svg.dataset.id]; conTooltip(svg, (b) => [n.s_apoya[b], n.s_rechaza[b]]); });
+  mostrarHasta(cur);
+}
+function seleccionar(id) {
+  if (!narrDe[id]) return;
+  sel = id;
+  if (!visibles().some(n => n.id === id)) { estado.q = ""; $("#q").value = ""; estado.filtro = "todas"; marcar("#filtro", "todas"); }
+  pintar();
+  document.getElementById("narr-" + id).scrollIntoView({block: "center"});
+}
+function marcar(grupo, v) { $$(grupo + " button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); }
+$("#q").addEventListener("input", (e) => { estado.q = e.target.value; pintar(); });
+$("#orden").addEventListener("change", (e) => { estado.orden = e.target.value; pintar(); });
+for (const k of ["filtro", "escala"]) $("#" + k).addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  estado[k] = b.dataset.v; marcar("#" + k, b.dataset.v); pintar();
+});
+
+// --- alertas y operaciones
+$("#cnt-al").textContent = D.alertas.length || "";
+$("#alertas").innerHTML = D.alertas.length ? D.alertas.map(a => `
+  <button class="alerta ${a.tipo.startsWith("Op") ? "op" : "em"}" data-bin="${a.bin}" data-n="${a.narrativa || ""}">
+    <span class="dot"></span>
+    <span><span class="tp"><span>${a.tipo}</span><span class="ts">${hora(a.ts)}</span></span><span class="tx">${esc(a.texto)}</span></span>
+  </button>`).join("") : '<div class="vacio">Sin alertas.</div>';
+const antig = (d) => d == null ? "—" : (d < 60 ? Math.round(d) + " días" : (d / 365).toFixed(1).replace(".", ",") + " años");
+$("#cnt-op").textContent = D.operaciones.length || "";
+$("#ops").innerHTML = D.operaciones.map(o => `
+  <div class="opcard">
+    <div class="cab"><span class="id">${o.id}</span><span class="meta">desde ${hora(o.inicio)}</span></div>
+    <div class="emp">Empuja <b>«${esc((narrDe[o.narrativa] || {}).titulo || o.narrativa)}»</b> <span class="pill ${o.postura === "apoya" ? "apoya" : "rechaza"}">${esc(o.postura)}</span></div>
+    <dl class="stats">
+      <div><dt>Cuentas</dt><dd>${fmt.format(o.cuentas)}</dd></div>
+      <div><dt>Comentarios</dt><dd>${fmt.format(o.comentarios)}</dd></div>
+      <div><dt>Antigüedad mediana</dt><dd>${antig(o.antiguedad)}</dd></div>
+      <div><dt>Actividad nocturna</dt><dd>${pct(o.nocturna)}</dd><div class="medidor"><span style="width:${o.nocturna * 100}%"></span></div></div>
+      <div style="grid-column:1/-1"><dt>Foco en esa narrativa</dt><dd>${pct(o.foco)}</dd><div class="medidor"><span style="width:${o.foco * 100}%"></span></div></div>
+    </dl>
+    <button class="ver" data-n="${o.narrativa}">Ver narrativa →</button>
+  </div>`).join("") || '<div class="vacio">No se detectaron operaciones.</div>';
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-n]"); if (b && b.dataset.n) seleccionar(b.dataset.n); });
+
+// --- modo en vivo: el período completo en ~60 s
+const ICONO_PLAY = '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M2 1l9 5-9 5z"/></svg>';
+const ICONO_STOP = '<svg viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="2" width="8" height="8" rx="1"/></svg>';
+const slider = $("#slider");
+slider.max = NB - 1;
+function botonVivo() { $("#vivo").innerHTML = timer ? ICONO_STOP + "Detener" : ICONO_PLAY + "Reproducir en vivo"; }
+function mostrarHasta(b) {
+  cur = b;
+  $$("svg.serie").forEach(svg => {
+    const w = svg.viewBox.baseVal.width, X = NB > 1 ? b * w / (NB - 1) : w, v = svg.querySelector(".velo");
+    v.setAttribute("x", X); v.setAttribute("width", b >= NB - 1 ? 0 : w - X + 4);
+  });
+  const X = NB > 1 ? b * PW / (NB - 1) : PW, cab = pano.querySelector(".cabezal");
+  cab.setAttribute("x1", X); cab.setAttribute("x2", X); cab.style.visibility = b >= NB - 1 ? "hidden" : "visible";
+  $$(".alerta, .marca").forEach(el => el.classList.toggle("oculta", +el.dataset.bin > b));
+  slider.value = b;
+  $("#reloj").textContent = b >= NB - 1 ? "Período completo" : fecha(b);
+}
+function detener() { clearInterval(timer); timer = null; botonVivo(); }
+$("#vivo").addEventListener("click", () => {
+  if (timer) { detener(); mostrarHasta(NB - 1); return; }
+  let b = cur >= NB - 1 ? 0 : cur;
+  timer = setInterval(() => { mostrarHasta(b); if (++b >= NB) { detener(); mostrarHasta(NB - 1); } }, 60000 / NB);
+  botonVivo();
+});
+slider.addEventListener("input", () => { if (timer) detener(); mostrarHasta(+slider.value); });
+botonVivo();
+pintar();
+// #t=<bloque>: fija el momento de la reproducción (lo usa la grabación del video)
+const mt = location.hash.match(/t=(\d+)/);
+if (mt) mostrarHasta(clamp(+mt[1]));
+$("#tema").addEventListener("click", () => {
+  const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = oscuro ? "light" : "dark";
+});
+</script>
+</body>
+</html>

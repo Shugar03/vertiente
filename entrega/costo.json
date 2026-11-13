@@ -1,0 +1,10 @@
+{
+  "comentarios_procesados": 150000,
+  "segundos": 375.0,
+  "tokens_ia": 0,
+  "usd_ia": 0.0,
+  "usd_por_mil_comentarios": 0.0,
+  "hardware": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD, 12 núcleos, Windows",
+  "almacenamiento": "DuckDB (en proceso) sobre Parquet local; caché de embeddings por hash de texto",
+  "notas": "embeddings locales (multilingual-e5-small) solo sobre textos únicos; narrativas por grafo de similitud + respuestas; coordinación por sincronía alineada repetida en SQL. Sin LLM: todas las decisiones son locales."
+}
