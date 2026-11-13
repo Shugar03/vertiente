@@ -23,7 +23,7 @@ def datos(interim: Path) -> dict:
     a = pd.read_parquet(interim / "narrativas_asig.parquet", columns=["comentario_id", "narrativa", "postura"])
     meta = pd.read_parquet(interim / "narrativas_meta.parquet")
     ops = pd.read_parquet(interim / "operaciones_meta.parquet")
-    reporte = json.loads((interim / "reporte.json").read_text()) if (interim / "reporte.json").exists() else {}
+    reporte = json.loads((interim / "reporte.json").read_text(encoding="utf-8")) if (interim / "reporte.json").exists() else {}
 
     d = c.merge(a, on="comentario_id")
     d = d[d["ts"].notna()]

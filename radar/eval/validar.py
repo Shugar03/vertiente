@@ -122,7 +122,7 @@ def main() -> None:
     ap.add_argument("--config", type=Path, default=Path("config.yaml"))
     ap.add_argument("--solo", nargs="*")
     a = ap.parse_args()
-    cfg = yaml.safe_load(a.config.read_text())
+    cfg = yaml.safe_load(a.config.read_text(encoding="utf-8"))
     filas = []
     casos = [(k, f, False, cfg["seed"]) for k, f in variantes(a.datos).items()]
     casos += [("ensuciado", lambda c: c, True, cfg["seed"]), ("semilla_7", lambda c: c, False, 7),

@@ -17,3 +17,8 @@ __pycache__/
 # temporales de DuckDB (spill a disco)
 .tmp/
 *.tmp
+
+# cobertura de tests (se regenera con pytest --cov)
+.coverage
+.coverage.*
+htmlcov/

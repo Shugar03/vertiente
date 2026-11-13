@@ -98,3 +98,16 @@ def test_texto_norm_y_hash(interim):
     out, _ = interim
     (norm, h), = _q(out, "select texto_norm, texto_hash from '{d}/comentarios.parquet' where comentario_id='c1'")
     assert norm == "hola mundo" and len(h) == 20
+
+
+def test_fecha_sin_zona_se_lee_como_hora_argentina(tmp_path):
+    d = tmp_path / "datos"
+    d.mkdir()
+    com = COMENTARIOS.splitlines()[0] + "\nz1,p1,u1,2026-09-01 07:00:00,sin zona,,0\nz2,p1,u1,2026-09-01T07:00:00-03:00,con zona,,0\n"
+    for nombre, contenido in [("comentarios", com), ("cuentas", CUENTAS), ("publicaciones", PUBLICACIONES)]:
+        with gzip.open(d / f"{nombre}.csv.gz", "wt", encoding="utf-8") as f:
+            f.write(contenido)
+    out = tmp_path / "interim"
+    ingest.run(d, out, {"tz": "-03:00"})
+    r = dict(_q(out, "select comentario_id, epoch(ts) from '{d}/comentarios.parquet'"))
+    assert r["z1"] == r["z2"]  # 07:00 sin zona = 07:00-03:00 = 10:00 UTC (no 07:00 UTC)

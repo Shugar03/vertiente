@@ -95,7 +95,9 @@ def run(datos: Path, interim: Path, config: dict) -> dict:
     interim.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect()
     con.execute(f"set memory_limit='{config.get('duckdb', {}).get('memory_limit', '4GB')}'")
-    con.execute("set TimeZone='UTC'")
+    # Zona de los datos: una fecha SIN offset se interpreta como hora argentina (si se leyera como UTC, el origen
+    # quedaría corrido 3 h, justo la tolerancia del puntaje). Las fechas con offset no cambian; se guardan como instantes.
+    con.execute("set TimeZone='America/Argentina/Buenos_Aires'")
 
     df, reporte = _comentarios(con, datos)
     con.register("cdf", df)

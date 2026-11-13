@@ -188,5 +188,5 @@ def test_demo_por_linea_de_comandos(tmp_path, monkeypatch):
     salida = tmp_path / "x" / "dash.html"
     monkeypatch.setattr(sys, "argv", ["demo", "--interim", str(tmp_path), "--salida", str(salida)])
     demo.main()
-    assert salida.read_text().startswith("<!doctype html>")
-    assert json.loads(salida.read_text().split("const D = ")[1].split(";\n")[0])["n_bins"] == 1
+    assert salida.read_text(encoding="utf-8").startswith("<!doctype html>")
+    assert json.loads(salida.read_text(encoding="utf-8").split("const D = ")[1].split(";\n")[0])["n_bins"] == 1

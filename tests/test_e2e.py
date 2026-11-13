@@ -13,7 +13,7 @@ PRACTICA = Path("datos/practica")
 
 @pytest.mark.skipif(not (PRACTICA / "comentarios.csv.gz").exists(), reason="falta datos/practica (make datos)")
 def test_pipeline_completo_valido_y_con_puntaje(tmp_path):
-    cfg = copy.deepcopy(yaml.safe_load(Path("config.yaml").read_text()))
+    cfg = copy.deepcopy(yaml.safe_load(Path("config.yaml").read_text(encoding="utf-8")))
     cfg["interim_dir"] = str(tmp_path / "interim")
     etapas = run(PRACTICA, tmp_path / "entrega", cfg)
     assert validar(PRACTICA, tmp_path / "entrega") == []
